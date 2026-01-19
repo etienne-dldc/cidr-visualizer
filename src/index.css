@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@theme {
+  --color-parchment: #f0efeb;
+  --color-carbon-black: #232321;
+
+  --color-golden-pollen: #fec955;
+  --color-amber-flame: #ffbb2c;
+  --color-lime-moss: #8aa232;
+  --color-clay-soil: #754539;
+  --color-dim-grey: #787262;
+  --color-periwinkle: #e0d8ff;
+  --color-almond-silk: #f4d3cc;
+  --color-amber-flame-2: #ffb92c;
+}
