@@ -18,9 +18,9 @@ export function IPv6App() {
         <button className="rounded-lg p-2 hover:bg-black/10" onClick={() => dispatch({ kind: "RandomIpv6" })}>
           <DicesIcon size={36} />
         </button>
-        <IPv6Input ipv6={ipv6} onChange={(newIpv6) => dispatch({ kind: "SetIPv6", ipv6: newIpv6 })} />
         <CopyButton textToCopy={ipv6WithPrefix} />
       </div>
+      <IPv6Input ipv6={ipv6} onChange={(newIpv6) => dispatch({ kind: "SetIPv6", ipv6: newIpv6 })} />
       <IPv6Bits ipv6={ipv6} />
     </Fragment>
   );

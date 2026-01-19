@@ -1,4 +1,5 @@
 import type { IPv4CIDR } from "../utils/ipv4";
+import { parseIPv4String } from "../utils/parseIPv4String";
 import { DisplayInput, InputPart } from "./InputPart";
 
 export interface IPv4InputProps {
@@ -8,8 +9,19 @@ export interface IPv4InputProps {
 
 export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
   const [part1, part2, part3, part4, prefixLength] = ipv4;
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const pastedText = e.clipboardData.getData("text");
+    const parsed = parseIPv4String(pastedText);
+    if (parsed) {
+      onChange(parsed);
+      e.preventDefault();
+      (document.activeElement as HTMLInputElement)?.blur();
+    }
+  };
+
   return (
-    <div className="relative flex flex-row align-baseline text-5xl">
+    <div className="relative flex flex-row align-baseline text-5xl" onPaste={handlePaste}>
       <InputPart
         value={part1}
         onChange={(value) => onChange([value, part2, part3, part4, prefixLength])}

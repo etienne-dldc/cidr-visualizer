@@ -1,4 +1,5 @@
 import type { IPv6CIDR } from "../utils/ipv4";
+import { parseIPv6String } from "../utils/parseIPv6String";
 import { DisplayInput, InputPart } from "./InputPart";
 
 export interface IPv6InputProps {
@@ -8,8 +9,19 @@ export interface IPv6InputProps {
 
 export function IPv6Input({ ipv6, onChange }: IPv6InputProps) {
   const [p1, p2, p3, p4, p5, p6, p7, p8, prefixLength] = ipv6;
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const pastedText = e.clipboardData.getData("text");
+    const parsed = parseIPv6String(pastedText);
+    if (parsed) {
+      onChange(parsed);
+      e.preventDefault();
+      (document.activeElement as HTMLInputElement)?.blur();
+    }
+  };
+
   return (
-    <div className="relative grid grid-flow-col-dense text-5xl">
+    <div className="relative grid grid-flow-col-dense text-5xl" onPaste={handlePaste}>
       <InputPart
         value={p1}
         onChange={(value) => onChange([value, p2, p3, p4, p5, p6, p7, p8, prefixLength])}
