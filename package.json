@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
+    "bundle": "tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./dist/*",
+    "deploy": "pnpm run build && pnpm run bundle && pnpx caprover deploy -t ./deploy.tar --default",
     "dev": "vite",
     "format": "oxfmt .",
     "lint": "oxlint --type-aware .",
