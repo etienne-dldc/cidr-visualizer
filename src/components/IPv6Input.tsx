@@ -119,7 +119,7 @@ export function IPv6Input({ ipv6, onChange, highlightedCell, onHighlight }: IPv6
         shiftStep={8}
         isHexadecimal={false}
         isHighlighted={highlightedCell === "prefix"}
-        highlightedClass={highlightedCell === "prefix" ? "bg-cyan-400" : null}
+        highlightedClass={highlightedCell === "prefix" ? "bg-gray-400" : null}
         onHighlight={() => onHighlight?.("prefix")}
         onUnhighlight={() => onHighlight?.(null)}
       />

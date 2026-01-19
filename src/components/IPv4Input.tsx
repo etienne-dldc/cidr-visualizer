@@ -79,7 +79,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight }: IPv4
         shiftStep={4}
         isHexadecimal={false}
         isHighlighted={highlightedCell === "prefix"}
-        highlightedClass={highlightedCell === "prefix" ? "bg-lime-400" : null}
+        highlightedClass={highlightedCell === "prefix" ? "bg-gray-400" : null}
         onHighlight={() => onHighlight?.("prefix")}
         onUnhighlight={() => onHighlight?.(null)}
       />
