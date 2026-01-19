@@ -9,7 +9,7 @@ import { IPv6Input } from "./IPv6Input";
 
 export function IPv6App() {
   const { ipv6, dispatch } = useAppState();
-  const [highlightedCell, setHighlightedCell] = useState<number | null>(null);
+  const [highlightedCell, setHighlightedCell] = useState<number | "prefix" | null>(null);
 
   const ipv6String = formatIPv6(ipv6);
   const ipv6WithPrefix = `${ipv6String}/${ipv6[8]}`;
