@@ -5,9 +5,11 @@ import { DisplayInput, InputPart } from "./InputPart";
 export interface IPv4InputProps {
   ipv4: IPv4CIDR;
   onChange: (ipv4: IPv4CIDR) => void;
+  highlightedCell?: number | "prefix" | null;
+  onHighlight?: (cell: number | "prefix" | null) => void;
 }
 
-export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
+export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight }: IPv4InputProps) {
   const [part1, part2, part3, part4, prefixLength] = ipv4;
 
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
@@ -28,6 +30,10 @@ export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
         max={255}
         shiftStep={16}
         isHexadecimal={false}
+        isHighlighted={highlightedCell === 0}
+        highlightedClass={highlightedCell === 0 ? "bg-red-400" : null}
+        onHighlight={() => onHighlight?.(0)}
+        onUnhighlight={() => onHighlight?.(null)}
       />
       <DisplayInput value="." />
       <InputPart
@@ -36,6 +42,10 @@ export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
         max={255}
         shiftStep={16}
         isHexadecimal={false}
+        isHighlighted={highlightedCell === 1}
+        highlightedClass={highlightedCell === 1 ? "bg-orange-400" : null}
+        onHighlight={() => onHighlight?.(1)}
+        onUnhighlight={() => onHighlight?.(null)}
       />
       <DisplayInput value="." />
       <InputPart
@@ -44,6 +54,10 @@ export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
         max={255}
         shiftStep={16}
         isHexadecimal={false}
+        isHighlighted={highlightedCell === 2}
+        highlightedClass={highlightedCell === 2 ? "bg-amber-400" : null}
+        onHighlight={() => onHighlight?.(2)}
+        onUnhighlight={() => onHighlight?.(null)}
       />
       <DisplayInput value="." />
       <InputPart
@@ -52,6 +66,10 @@ export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
         max={255}
         shiftStep={16}
         isHexadecimal={false}
+        isHighlighted={highlightedCell === 3}
+        highlightedClass={highlightedCell === 3 ? "bg-yellow-400" : null}
+        onHighlight={() => onHighlight?.(3)}
+        onUnhighlight={() => onHighlight?.(null)}
       />
       <DisplayInput value="/" />
       <InputPart
@@ -60,6 +78,10 @@ export function IPv4Input({ ipv4, onChange }: IPv4InputProps) {
         max={32}
         shiftStep={4}
         isHexadecimal={false}
+        isHighlighted={highlightedCell === "prefix"}
+        highlightedClass={highlightedCell === "prefix" ? "bg-lime-400" : null}
+        onHighlight={() => onHighlight?.("prefix")}
+        onUnhighlight={() => onHighlight?.(null)}
       />
     </div>
   );

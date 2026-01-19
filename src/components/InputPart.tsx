@@ -12,9 +12,23 @@ export interface InputPartProps {
   max: number;
   shiftStep: number;
   isHexadecimal?: boolean;
+  isHighlighted?: boolean;
+  highlightedClass: string | null;
+  onHighlight?: () => void;
+  onUnhighlight?: () => void;
 }
 
-export function InputPart({ onChange, value, max, shiftStep, isHexadecimal = true }: InputPartProps) {
+export function InputPart({
+  onChange,
+  value,
+  max,
+  shiftStep,
+  isHexadecimal = true,
+  isHighlighted,
+  highlightedClass,
+  onHighlight,
+  onUnhighlight,
+}: InputPartProps) {
   const [focused, setFocused] = useState(false);
   const [internalValue, setInternalValue] = useState(isHexadecimal ? value?.toString(16) : value?.toString());
 
@@ -62,11 +76,13 @@ export function InputPart({ onChange, value, max, shiftStep, isHexadecimal = tru
   return (
     <div
       className={cn(
-        "relative rounded-md hover:bg-white",
+        "relative rounded-md",
         wrapper,
-        focused && "bg-white",
+        isHighlighted && highlightedClass,
         isError && "after:absolute after:inset-0 after:rounded-md after:border-2 after:border-red-500",
       )}
+      onMouseEnter={onHighlight}
+      onMouseLeave={onUnhighlight}
     >
       <input
         type="text"
@@ -85,7 +101,7 @@ export function InputPart({ onChange, value, max, shiftStep, isHexadecimal = tru
 
 export function DisplayInput({ value }: { value: string }) {
   return (
-    <div className={cn(wrapper, "z-10")}>
+    <div className={cn(wrapper, "pointer-events-none z-10")}>
       <input
         type="text"
         placeholder="0"

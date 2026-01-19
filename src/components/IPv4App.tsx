@@ -1,4 +1,5 @@
 import { DicesIcon } from "lucide-react";
+import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
@@ -7,6 +8,7 @@ import { IPv4Input } from "./IPv4Input";
 
 export function IPv4App() {
   const { ipv4, dispatch } = useAppState();
+  const [highlightedCell, setHighlightedCell] = useState<number | "prefix" | null>(null);
 
   return (
     <Fragment>
@@ -16,8 +18,13 @@ export function IPv4App() {
         </button>
         <CopyButton textToCopy={`${ipv4[0]}.${ipv4[1]}.${ipv4[2]}.${ipv4[3]}/${ipv4[4]}`} />
       </div>
-      <IPv4Input ipv4={ipv4} onChange={(newIpv4) => dispatch({ kind: "SetIPv4", ipv4: newIpv4 })} />
-      <IPv4Bits ipv4={ipv4} />
+      <IPv4Input
+        ipv4={ipv4}
+        onChange={(newIpv4) => dispatch({ kind: "SetIPv4", ipv4: newIpv4 })}
+        highlightedCell={highlightedCell}
+        onHighlight={setHighlightedCell}
+      />
+      <IPv4Bits ipv4={ipv4} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
     </Fragment>
   );
 }
