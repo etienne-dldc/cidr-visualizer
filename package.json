@@ -1,12 +1,17 @@
 {
   "name": "cidr-visualizer",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "vite",
+    "format": "oxfmt .",
+    "lint": "oxlint --type-aware .",
+    "lint:fix": "oxlint --fix --type-aware .",
+    "preview": "vite preview",
+    "typecheck": "tsc",
+    "typecheck:watch": "tsc --watch"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -24,7 +29,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "globals": "^16.5.0",
+    "oxfmt": "^0.26.0",
+    "oxlint": "^1.41.0",
+    "oxlint-tsgolint": "^0.11.1",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.2.5"
   },

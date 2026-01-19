@@ -1,12 +1,5 @@
 import { produce } from "immer";
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useReducer,
-  type ActionDispatch,
-  type PropsWithChildren,
-} from "react";
+import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
 import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
 
 export interface TAppState {
@@ -15,9 +8,7 @@ export interface TAppState {
   ipv6: IPv6CIDR;
 }
 
-const AppStateContext = createContext<
-  (TAppState & { dispatch: ActionDispatch<[action: TAppAction]> }) | null
->(null);
+const AppStateContext = createContext<(TAppState & { dispatch: ActionDispatch<[action: TAppAction]> }) | null>(null);
 
 export type TAppAction =
   | { kind: "SetMode"; mode: TAppState["mode"] }
@@ -94,17 +85,7 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         const newP6 = parseInt(bits.slice(80, 96).join(""), 2);
         const newP7 = parseInt(bits.slice(96, 112).join(""), 2);
         const newP8 = parseInt(bits.slice(112, 128).join(""), 2);
-        draft.ipv6 = [
-          newP1,
-          newP2,
-          newP3,
-          newP4,
-          newP5,
-          newP6,
-          newP7,
-          newP8,
-          prefixLength,
-        ];
+        draft.ipv6 = [newP1, newP2, newP3, newP4, newP5, newP6, newP7, newP8, prefixLength];
         return;
       }
     }
@@ -119,10 +100,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 0],
   });
 
-  const contextValue = useMemo(
-    () => ({ ...state, dispatch }),
-    [state, dispatch],
-  );
+  const contextValue = useMemo(() => ({ ...state, dispatch }), [state, dispatch]);
 
   return <AppStateContext value={contextValue}>{children}</AppStateContext>;
 }

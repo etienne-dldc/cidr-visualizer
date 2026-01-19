@@ -11,19 +11,11 @@ export function IPv4App() {
   return (
     <Fragment>
       <div className="flex flex-row items-center gap-4">
-        <button
-          className="rounded-lg hover:bg-black/10 p-2"
-          onClick={() => dispatch({ kind: "RandomIpv4" })}
-        >
+        <button className="rounded-lg p-2 hover:bg-black/10" onClick={() => dispatch({ kind: "RandomIpv4" })}>
           <DicesIcon size={36} />
         </button>
-        <IPv4Input
-          ipv4={ipv4}
-          onChange={(newIpv4) => dispatch({ kind: "SetIPv4", ipv4: newIpv4 })}
-        />
-        <CopyButton
-          textToCopy={`${ipv4[0]}.${ipv4[1]}.${ipv4[2]}.${ipv4[3]}/${ipv4[4]}`}
-        />
+        <IPv4Input ipv4={ipv4} onChange={(newIpv4) => dispatch({ kind: "SetIPv4", ipv4: newIpv4 })} />
+        <CopyButton textToCopy={`${ipv4[0]}.${ipv4[1]}.${ipv4[2]}.${ipv4[3]}/${ipv4[4]}`} />
       </div>
       <IPv4Bits ipv4={ipv4} />
     </Fragment>

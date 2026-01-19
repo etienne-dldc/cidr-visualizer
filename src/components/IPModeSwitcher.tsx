@@ -5,7 +5,7 @@ export function IPModeSwitcher() {
   const { mode, dispatch } = useAppState();
 
   return (
-    <div className="flex gap-4 p-4 bg-white rounded-xl self-stretch">
+    <div className="flex gap-4 self-stretch rounded-xl bg-white p-4">
       <ButtonCard
         label="IPv4"
         description="32-bit addresses"

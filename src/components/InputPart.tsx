@@ -4,7 +4,7 @@ import { parseDecimalPart } from "../utils/parse";
 import { parseHexPart } from "../utils/parseHex";
 import { cn } from "../utils/styles";
 
-const wrapper = cn("px-2 -mx-2 py-1");
+const wrapper = cn("-mx-2 px-2 py-1");
 
 export interface InputPartProps {
   onChange: (value: number) => void;
@@ -14,28 +14,16 @@ export interface InputPartProps {
   isHexadecimal?: boolean;
 }
 
-export function InputPart({
-  onChange,
-  value,
-  max,
-  shiftStep,
-  isHexadecimal = true,
-}: InputPartProps) {
+export function InputPart({ onChange, value, max, shiftStep, isHexadecimal = true }: InputPartProps) {
   const [focused, setFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState(
-    isHexadecimal ? value?.toString(16) : value?.toString(),
-  );
+  const [internalValue, setInternalValue] = useState(isHexadecimal ? value?.toString(16) : value?.toString());
 
-  const num = isHexadecimal
-    ? parseHexPart(internalValue, max)
-    : parseDecimalPart(internalValue, max);
+  const num = isHexadecimal ? parseHexPart(internalValue, max) : parseDecimalPart(internalValue, max);
 
   const isError = focused && internalValue && num === null;
 
   const onChangeInternal = (value: string) => {
-    const parsed = isHexadecimal
-      ? parseHexPart(value, max)
-      : parseDecimalPart(value, max);
+    const parsed = isHexadecimal ? parseHexPart(value, max) : parseDecimalPart(value, max);
     if (parsed !== null) {
       onChange(parsed);
     }
@@ -49,9 +37,7 @@ export function InputPart({
       step = e.key === "ArrowUp" ? step : -step;
       const nextNum = incrementPart(currentNum, step, max);
       if (nextNum !== currentNum) {
-        onChangeInternal(
-          isHexadecimal ? nextNum.toString(16) : nextNum.toString(),
-        );
+        onChangeInternal(isHexadecimal ? nextNum.toString(16) : nextNum.toString());
         e.preventDefault();
       }
     }
@@ -71,26 +57,21 @@ export function InputPart({
     setInternalValue(isHexadecimal ? value.toString(16) : value.toString());
   };
 
-  const inputValue = focused
-    ? internalValue
-    : isHexadecimal
-      ? value.toString(16)
-      : value.toString();
+  const inputValue = focused ? internalValue : isHexadecimal ? value.toString(16) : value.toString();
 
   return (
     <div
       className={cn(
-        "hover:bg-white rounded-md relative",
+        "relative rounded-md hover:bg-white",
         wrapper,
         focused && "bg-white",
-        isError &&
-          "after:inset-0 after:border-2 after:border-red-500 after:absolute after:rounded-md",
+        isError && "after:absolute after:inset-0 after:rounded-md after:border-2 after:border-red-500",
       )}
     >
       <input
         type="text"
         placeholder="0"
-        className="text-center font-mono outline-none leading-none"
+        className="text-center font-mono leading-none outline-none"
         value={inputValue}
         onChange={onInputChange}
         onKeyDown={handleKeyDown}
@@ -109,7 +90,7 @@ export function DisplayInput({ value }: { value: string }) {
         type="text"
         placeholder="0"
         disabled
-        className="text-center font-mono w-[1ch] outline-none leading-none"
+        className="w-[1ch] text-center font-mono leading-none outline-none"
         value={value}
         readOnly
       />

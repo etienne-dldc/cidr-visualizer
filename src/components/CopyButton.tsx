@@ -10,7 +10,7 @@ export function CopyButton({ textToCopy }: CopyButtonProps) {
   const timerRef = useRef<number | null>(null);
 
   const onClick = () => {
-    navigator.clipboard.writeText(textToCopy);
+    navigator.clipboard.writeText(textToCopy).catch(() => {});
     setCopied(true);
     timerRef.current = setTimeout(() => {
       if (timerRef.current) {
@@ -30,7 +30,7 @@ export function CopyButton({ textToCopy }: CopyButtonProps) {
   );
 
   return (
-    <button className="rounded-lg hover:bg-black/10 p-2" onClick={onClick}>
+    <button className="rounded-lg p-2 hover:bg-black/10" onClick={onClick}>
       {copied ? <CheckIcon size={36} /> : <ClipboardIcon size={36} />}
     </button>
   );
