@@ -104,9 +104,22 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
 
   // Apply inverse mask to each part
   for (let i = 0; i < 8; i++) {
-    const bitsInPart = Math.min(16, Math.max(0, hostBits - i * 16));
-    if (bitsInPart > 0) {
-      const inverseMask = (1 << bitsInPart) - 1;
+    const startBit = i * 16;
+    const endBit = startBit + 16;
+    const hostStartBit = prefixLength;
+
+    if (endBit <= hostStartBit) {
+      // This part is entirely in the network bits, skip it
+      continue;
+    }
+
+    if (startBit >= hostStartBit) {
+      // This part is entirely in the host bits, set all to 1
+      broadcastIP[i] = 0xffff;
+    } else {
+      // This part is partially in the host bits
+      const bitsInHost = endBit - hostStartBit;
+      const inverseMask = (1 << bitsInHost) - 1;
       broadcastIP[i] |= inverseMask;
     }
   }

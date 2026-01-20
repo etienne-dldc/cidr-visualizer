@@ -14,18 +14,16 @@ export function ReservedIPInfo({ info, onCidrClick }: ReservedIPInfoProps) {
   // Format the description to create a natural sentence
   const lowerDesc = info.description.toLowerCase();
   const descriptionText =
-    lowerDesc.startsWith("used for") || lowerDesc.startsWith("reserved for")
-      ? lowerDesc
-      : `used for ${lowerDesc}`;
+    lowerDesc.startsWith("used for") || lowerDesc.startsWith("reserved for") ? lowerDesc : `used for ${lowerDesc}`;
 
   return (
-    <div className="mt-6 rounded-lg bg-periwinkle p-5">
+    <div className="bg-lime-moss mt-6 rounded-lg p-5">
       <div className="flex items-start gap-3">
-        <InfoIcon className="mt-0.5 shrink-0 text-carbon-black" size={24} />
+        <InfoIcon className="text-carbon-black mt-0.5 shrink-0" size={24} />
         <div className="flex-1">
-          <p className="text-base text-carbon-black">
+          <p className="text-carbon-black text-base">
             <button
-              className="font-semibold underline decoration-dotted hover:decoration-solid cursor-pointer"
+              className="cursor-pointer font-semibold underline decoration-dotted hover:decoration-solid"
               onClick={() => onCidrClick?.(info.cidr)}
               type="button"
             >
@@ -33,7 +31,7 @@ export function ReservedIPInfo({ info, onCidrClick }: ReservedIPInfoProps) {
             </button>{" "}
             is a reserved IP range {descriptionText}.
           </p>
-          {info.rfc && <p className="mt-2 text-sm text-dim-grey">{info.rfc}</p>}
+          {info.rfc && <p className="text-carbon-black/60 mt-2 text-sm">{info.rfc}</p>}
         </div>
       </div>
     </div>
