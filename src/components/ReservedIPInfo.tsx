@@ -31,7 +31,7 @@ export function ReservedIPInfo({ info, onCidrClick }: ReservedIPInfoProps) {
             </button>{" "}
             is a reserved IP range {descriptionText}.
           </p>
-          {info.rfc && <p className="text-carbon-black/60 mt-2 text-sm">{info.rfc}</p>}
+          {info.rfc && <p className="text-carbon-black mt-2 text-sm">{info.rfc}</p>}
         </div>
       </div>
     </div>
