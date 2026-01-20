@@ -61,7 +61,7 @@ function NetworkProperty({ icon: Icon, label, value }: NetworkPropertyProps) {
     <div className="flex items-center gap-5">
       <Icon className="text-carbon-black mt-1 shrink-0" size={28} />
       <div className="min-w-0 flex-1">
-        <p className="text-dim-grey text-xs font-medium">{label}</p>
+        <p className="text-carbon-black/70 text-xs font-medium">{label}</p>
         <p className="text-carbon-black font-mono text-lg font-semibold break-all">{value}</p>
       </div>
     </div>
