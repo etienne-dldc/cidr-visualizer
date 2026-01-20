@@ -264,8 +264,8 @@ function expandIPv6(address: string): string {
   // Handle :: notation
   if (address.includes("::")) {
     const [before, after] = address.split("::");
-    const beforeParts = before ? before.split(":") : [];
-    const afterParts = after ? after.split(":") : [];
+    const beforeParts = before ? before.split(":").filter((p) => p !== "") : [];
+    const afterParts = after ? after.split(":").filter((p) => p !== "") : [];
     const missingParts = 8 - beforeParts.length - afterParts.length;
     const middle = Array(missingParts).fill("0");
     const allParts = [...beforeParts, ...middle, ...afterParts];
@@ -306,7 +306,7 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPInfo | null {
  * Check if an IPv6 address matches a reserved range
  */
 export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPInfo | null {
-  const [p1, p2, p3, p4, p5, p6, p7, p8] = ipv6;
+  const ipParts = [ipv6[0], ipv6[1], ipv6[2], ipv6[3], ipv6[4], ipv6[5], ipv6[6], ipv6[7]];
 
   for (const range of RESERVED_IPV6_RANGES) {
     const { parts, prefixLength } = parseCIDR(range.cidr);
@@ -319,7 +319,7 @@ export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPInfo | null {
       const bitsInPart = Math.min(16, prefixLength - bitsChecked);
       if (bitsInPart <= 0) break;
 
-      const ipPart = [p1, p2, p3, p4, p5, p6, p7, p8][i];
+      const ipPart = ipParts[i];
       const rangePart = parts[i] || 0;
 
       if (bitsInPart === 16) {
