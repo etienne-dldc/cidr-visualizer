@@ -6,6 +6,10 @@ export interface ReservedIPInfo {
   rfc?: string;
 }
 
+export interface ReservedIPMatch extends ReservedIPInfo {
+  cidr: string;
+}
+
 interface IPv4ReservedRange {
   cidr: string;
   info: ReservedIPInfo;
@@ -280,7 +284,7 @@ function expandIPv6(address: string): string {
 /**
  * Check if an IPv4 address matches a reserved range
  */
-export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPInfo | null {
+export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
   const [p1, p2, p3, p4] = ipv4;
 
   for (const range of RESERVED_IPV4_RANGES) {
@@ -295,7 +299,7 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPInfo | null {
 
     // Check if the IP is in this range
     if ((ipInt & mask) === (rangeInt & mask)) {
-      return range.info;
+      return { ...range.info, cidr: range.cidr };
     }
   }
 
@@ -305,7 +309,7 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPInfo | null {
 /**
  * Check if an IPv6 address matches a reserved range
  */
-export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPInfo | null {
+export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPMatch | null {
   const ipParts = [ipv6[0], ipv6[1], ipv6[2], ipv6[3], ipv6[4], ipv6[5], ipv6[6], ipv6[7]];
 
   for (const range of RESERVED_IPV6_RANGES) {
@@ -341,7 +345,7 @@ export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPInfo | null {
     }
 
     if (matches) {
-      return range.info;
+      return { ...range.info, cidr: range.cidr };
     }
   }
 

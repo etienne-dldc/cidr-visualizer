@@ -1,8 +1,8 @@
 import { InfoIcon } from "lucide-react";
-import type { ReservedIPInfo as ReservedIPInfoType } from "../utils/reservedIPs";
+import type { ReservedIPMatch } from "../utils/reservedIPs";
 
 export interface ReservedIPInfoProps {
-  info: ReservedIPInfoType | null;
+  info: ReservedIPMatch | null;
 }
 
 export function ReservedIPInfo({ info }: ReservedIPInfoProps) {
@@ -11,13 +11,19 @@ export function ReservedIPInfo({ info }: ReservedIPInfoProps) {
   }
 
   return (
-    <div className="mt-6 rounded-lg border border-blue-300 bg-blue-50 p-4">
+    <div className="mt-6 rounded-lg bg-periwinkle p-5">
       <div className="flex items-start gap-3">
-        <InfoIcon className="mt-0.5 shrink-0 text-blue-600" size={20} />
+        <InfoIcon className="mt-0.5 shrink-0 text-carbon-black" size={24} />
         <div className="flex-1">
-          <h3 className="font-semibold text-blue-900">{info.name}</h3>
-          <p className="mt-1 text-sm text-blue-800">{info.description}</p>
-          {info.rfc && <p className="mt-1 text-xs text-blue-600">{info.rfc}</p>}
+          <p className="text-base text-carbon-black">
+            <span className="font-semibold">{info.cidr}</span> is a reserved IP range{" "}
+            {info.description.toLowerCase().startsWith("used for") ||
+            info.description.toLowerCase().startsWith("reserved for")
+              ? info.description.charAt(0).toLowerCase() + info.description.slice(1)
+              : `used for ${info.description.toLowerCase()}`}
+            .
+          </p>
+          {info.rfc && <p className="mt-2 text-sm text-dim-grey">{info.rfc}</p>}
         </div>
       </div>
     </div>
