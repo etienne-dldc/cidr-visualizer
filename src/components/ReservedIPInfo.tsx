@@ -17,9 +17,9 @@ export function ReservedIPInfo({ info, onCidrClick }: ReservedIPInfoProps) {
     lowerDesc.startsWith("used for") || lowerDesc.startsWith("reserved for") ? lowerDesc : `used for ${lowerDesc}`;
 
   return (
-    <div className="bg-lime-moss mt-6 rounded-lg p-5">
+    <div className="bg-lime-moss rounded-lg p-5">
       <div className="flex items-start gap-3">
-        <InfoIcon className="text-carbon-black mt-0.5 shrink-0" size={24} />
+        <InfoIcon className="text-carbon-black shrink-0" size={24} />
         <div className="flex-1">
           <p className="text-carbon-black text-base">
             <button

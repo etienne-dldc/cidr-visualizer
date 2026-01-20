@@ -23,7 +23,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight }: IPv4
   };
 
   return (
-    <div className="relative flex flex-row align-baseline text-5xl" onPaste={handlePaste}>
+    <div className="relative flex flex-row align-baseline text-3xl sm:text-5xl" onPaste={handlePaste}>
       <InputPart
         value={part1}
         onChange={(value) => onChange([value, part2, part3, part4, prefixLength])}

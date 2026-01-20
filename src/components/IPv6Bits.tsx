@@ -15,7 +15,7 @@ export function IPv6Bits({ ipv6, mask, highlightedCell, onHighlight }: IPv6BitsP
   const highlightedPrefixClass = highlightedCell === "prefix" ? "bg-gray-400" : null;
 
   return (
-    <div className="grid grid-cols-2 gap-8 gap-y-4 text-2xl">
+    <div className="grid grid-cols-1 gap-8 gap-y-4 text-xl sm:grid-cols-2 md:text-2xl">
       <PartBits
         part={p1}
         mask={m1}

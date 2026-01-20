@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { ArrowDownIcon, ArrowUpIcon, GlobeIcon, LayersIcon, Share2Icon, ShieldIcon } from "lucide-react";
+import { ArrowRightFromLine, ArrowRightToLine, GlobeIcon, LayersIcon, Share2Icon, ShieldIcon } from "lucide-react";
 import type { IPv4, IPv6 } from "../utils/ipv4";
 import { formatIPv6 } from "../utils/ipv6";
 import type { IPv4NetworkInfo, IPv6NetworkInfo } from "../utils/networkInfo";
@@ -40,14 +40,14 @@ export function NetworkInfoDisplay({ isIPv4, info }: NetworkInfoDisplayProps) {
   const countStr = formatCount(info.count);
 
   return (
-    <div className="bg-almond-silk mt-6 rounded-lg p-5">
-      <div className={`grid ${isIPv4 ? "grid-cols-2" : "grid-cols-1"} gap-6`}>
+    <div className="bg-almond-silk rounded-lg p-5">
+      <div className={`grid ${isIPv4 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-6`}>
         <NetworkProperty icon={ShieldIcon} label="Netmask" value={netmaskStr} />
         <NetworkProperty icon={GlobeIcon} label="CIDR Base IP" value={baseIPStr} />
         <NetworkProperty icon={Share2Icon} label="Broadcast IP" value={broadcastIPStr} />
         <NetworkProperty icon={LayersIcon} label="Count" value={countStr} />
-        <NetworkProperty icon={ArrowUpIcon} label="First Usable IP" value={firstUsableStr} />
-        <NetworkProperty icon={ArrowDownIcon} label="Last Usable IP" value={lastUsableStr} />
+        <NetworkProperty icon={ArrowRightFromLine} label="First Usable IP" value={firstUsableStr} />
+        <NetworkProperty icon={ArrowRightToLine} label="Last Usable IP" value={lastUsableStr} />
       </div>
     </div>
   );
@@ -61,7 +61,7 @@ interface NetworkPropertyProps {
 
 function NetworkProperty({ icon: Icon, label, value }: NetworkPropertyProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-5">
       <Icon className="text-carbon-black mt-1 shrink-0" size={28} />
       <div className="min-w-0 flex-1">
         <p className="text-dim-grey text-xs font-medium">{label}</p>

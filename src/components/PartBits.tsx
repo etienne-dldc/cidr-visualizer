@@ -28,7 +28,7 @@ export function PartBits({
   const gridColsClass = length === 8 ? "grid-cols-[repeat(8,auto)]" : "grid-cols-[repeat(16,auto)]";
 
   return (
-    <div className={cn("grid grid-flow-col", gridColsClass)} onMouseEnter={onHighlight} onMouseLeave={onUnhighlight}>
+    <div className={cn("grid justify-center", gridColsClass)} onMouseEnter={onHighlight} onMouseLeave={onUnhighlight}>
       {bits.map((bit, index) => {
         const isFirst = index === 0;
         const isLast = index === bits.length - 1;

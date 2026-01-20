@@ -23,7 +23,10 @@ export function IPv6Input({ ipv6, onChange, highlightedCell, onHighlight }: IPv6
   };
 
   return (
-    <div className="relative grid grid-flow-col-dense text-5xl" onPaste={handlePaste}>
+    <div
+      className="relative grid grid-cols-[repeat(8,auto)] text-3xl sm:text-5xl xl:grid-flow-col"
+      onPaste={handlePaste}
+    >
       <InputPart
         value={p1}
         onChange={(value) => onChange([value, p2, p3, p4, p5, p6, p7, p8, prefixLength])}
