@@ -1,3 +1,4 @@
+import { track } from "@plausible-analytics/tracker";
 import { ClipboardIcon, Dice1Icon, DicesIcon, LinkIcon } from "lucide-react";
 import { useState } from "react";
 import { ActionButton } from "./ActionButton";
@@ -10,6 +11,7 @@ interface ActionButtonRowProps {
   isRandomNetworkDisabled: boolean;
   isRandomIPDisabled: boolean;
   shareableURL: string;
+  ipType: "IPv4" | "IPv6";
 }
 
 export function ActionButtonRow({
@@ -20,25 +22,39 @@ export function ActionButtonRow({
   isRandomNetworkDisabled,
   isRandomIPDisabled,
   shareableURL,
+  ipType,
 }: ActionButtonRowProps) {
   const [copiedState, setCopiedState] = useState<"cidr" | "ip" | "link" | null>(null);
 
   const handleCopyCidr = () => {
+    track("copy_cidr", { props: { ipType } });
     navigator.clipboard.writeText(cidrString).catch(() => {});
     setCopiedState("cidr");
     setTimeout(() => setCopiedState(null), 2000);
   };
 
   const handleCopyIP = () => {
+    track("copy_ip", { props: { ipType } });
     navigator.clipboard.writeText(ipString).catch(() => {});
     setCopiedState("ip");
     setTimeout(() => setCopiedState(null), 2000);
   };
 
   const handleCopyLink = () => {
+    track("copy_link", { props: { ipType } });
     navigator.clipboard.writeText(shareableURL).catch(() => {});
     setCopiedState("link");
     setTimeout(() => setCopiedState(null), 2000);
+  };
+
+  const handleRandomNetwork = () => {
+    track("random_network", { props: { ipType } });
+    onRandomNetwork();
+  };
+
+  const handleRandomIP = () => {
+    track("random_ip", { props: { ipType } });
+    onRandomIP();
   };
 
   return (
@@ -46,14 +62,14 @@ export function ActionButtonRow({
       <ActionButton
         icon={DicesIcon}
         label="Random Network"
-        onClick={onRandomNetwork}
+        onClick={handleRandomNetwork}
         disabled={isRandomNetworkDisabled}
         tooltip="Generate a random network address while keeping the same prefix length. Set IP bits to zero."
       />
       <ActionButton
         icon={Dice1Icon}
         label="Random IP"
-        onClick={onRandomIP}
+        onClick={handleRandomIP}
         disabled={isRandomIPDisabled}
         tooltip="Generate a random host IP address within the current network"
       />

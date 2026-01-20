@@ -41,6 +41,7 @@ export function IPv4App() {
         isRandomNetworkDisabled={ipv4[4] === 0}
         isRandomIPDisabled={ipv4[4] === 32}
         shareableURL={shareableURL}
+        ipType="IPv4"
       />
       <div className="flex flex-col items-center">
         <IPv4Input highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />

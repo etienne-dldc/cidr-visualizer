@@ -1,3 +1,4 @@
+import { track } from "@plausible-analytics/tracker";
 import { produce } from "immer";
 import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
 import { generateRandomIPv4CIDR, generateRandomIPv4InNetwork } from "../utils/ipv4/random";
@@ -74,6 +75,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
       // Prefer IPv4 if both parse (shouldn't happen in practice)
       if (detected.ipv4) {
+        track("restore_from_url", { props: { ipType: "IPv4" } });
         return {
           mode: "IPv4" as const,
           ipv4: detected.ipv4,
@@ -82,6 +84,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       }
 
       if (detected.ipv6) {
+        track("restore_from_url", { props: { ipType: "IPv6" } });
         return {
           mode: "IPv6" as const,
           ipv4: [0, 0, 0, 0, 32] as IPv4CIDR,

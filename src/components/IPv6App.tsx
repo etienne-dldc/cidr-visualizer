@@ -43,6 +43,7 @@ export function IPv6App() {
         isRandomNetworkDisabled={ipv6[8] === 0}
         isRandomIPDisabled={ipv6[8] === 128}
         shareableURL={shareableURL}
+        ipType="IPv6"
       />
       <div className="flex flex-col items-center">
         <IPv6Input highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
