@@ -39,7 +39,7 @@ export function PartBits({
         const isLastMasked = isMasked && !isNextMasked;
 
         let roundedClass = "";
-        if (isMasked) {
+        if (isMasked && highlightedPrefixClass) {
           if (isFirstMasked && isLastMasked) {
             roundedClass = "rounded";
           } else if (isFirstMasked) {
