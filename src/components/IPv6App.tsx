@@ -47,12 +47,19 @@ export function IPv6App() {
   return (
     <Fragment>
       <div className="grid grid-cols-4 gap-2">
-        <ActionButton icon={DicesIcon} label="Random Prefix" onClick={() => dispatch({ kind: "RandomPrefixIPv6" })} />
+        <ActionButton
+          icon={DicesIcon}
+          label="Random Network"
+          onClick={() => dispatch({ kind: "RandomPrefixIPv6" })}
+          disabled={ipv6[8] === 0}
+          tooltip="Generate a random network address while keeping the same prefix length. Set IP bits to zero."
+        />
         <ActionButton
           icon={Dice1Icon}
           label="Random IP"
           onClick={() => dispatch({ kind: "RandomIPInNetworkIPv6" })}
           disabled={ipv6[8] === 128}
+          tooltip="Generate a random host IP address within the current network"
         />
         <ActionButton
           icon={ClipboardIcon}

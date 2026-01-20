@@ -16,6 +16,7 @@
     "typecheck:watch": "tsc --watch"
   },
   "dependencies": {
+    "@ariakit/react": "^0.4.21",
     "@tailwindcss/vite": "^4.1.18",
     "clsx": "^2.1.1",
     "immer": "^11.1.3",
