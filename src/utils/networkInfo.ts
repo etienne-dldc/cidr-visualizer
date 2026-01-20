@@ -20,7 +20,6 @@ export interface IPv6NetworkInfo {
 
 export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   const [p1, p2, p3, p4, prefixLength] = cidr;
-  const baseIP: IPv4 = [p1, p2, p3, p4];
 
   // Calculate netmask
   const netmask: IPv4 = [0, 0, 0, 0];
@@ -30,18 +29,29 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
     netmask[octetIndex] |= 1 << bitIndex;
   }
 
-  // Calculate broadcast IP
-  const broadcastIP: IPv4 = [...baseIP] as IPv4;
+  // Convert to 32-bit number and apply netmask to get base address
+  const inputNum = (p1 << 24) | (p2 << 16) | (p3 << 8) | p4;
   const hostBits = 32 - prefixLength;
-  const inverseMask = (1 << hostBits) - 1;
+  const networkMask = (0xffffffff << hostBits) & 0xffffffff;
+  const baseNum = inputNum & networkMask;
 
-  // Convert to 32-bit number, apply inverse mask, convert back
-  const baseNum = (p1 << 24) | (p2 << 16) | (p3 << 8) | p4;
+  // Get the masked baseIP
+  const baseIP: IPv4 = [
+    (baseNum >>> 24) & 0xff,
+    (baseNum >>> 16) & 0xff,
+    (baseNum >>> 8) & 0xff,
+    baseNum & 0xff,
+  ];
+
+  // Calculate broadcast IP
+  const inverseMask = (1 << hostBits) - 1;
   const broadcastNum = baseNum | inverseMask;
-  broadcastIP[0] = (broadcastNum >>> 24) & 0xff;
-  broadcastIP[1] = (broadcastNum >>> 16) & 0xff;
-  broadcastIP[2] = (broadcastNum >>> 8) & 0xff;
-  broadcastIP[3] = broadcastNum & 0xff;
+  const broadcastIP: IPv4 = [
+    (broadcastNum >>> 24) & 0xff,
+    (broadcastNum >>> 16) & 0xff,
+    (broadcastNum >>> 8) & 0xff,
+    broadcastNum & 0xff,
+  ];
 
   // Calculate count
   const count = BigInt(1) << BigInt(hostBits);
@@ -51,14 +61,8 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   let lastUsableIP: IPv4 | null = null;
 
   if (prefixLength < 31) {
-    // First usable is base + 1
-    const firstNum = baseNum + 1;
-    firstUsableIP = [
-      (firstNum >>> 24) & 0xff,
-      (firstNum >>> 16) & 0xff,
-      (firstNum >>> 8) & 0xff,
-      firstNum & 0xff,
-    ];
+    // First usable is the network address (baseIP)
+    firstUsableIP = baseIP;
 
     // Last usable is broadcast - 1
     const lastNum = broadcastNum - 1;
@@ -87,7 +91,6 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
 
 export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
   const [p1, p2, p3, p4, p5, p6, p7, p8, prefixLength] = cidr;
-  const baseIP: IPv6 = [p1, p2, p3, p4, p5, p6, p7, p8];
 
   // Calculate netmask
   const netmask: IPv6 = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -97,7 +100,13 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
     netmask[partIndex] |= 1 << bitIndex;
   }
 
-  // For IPv6, broadcast is typically the same as the last address in the network
+  // Apply netmask to input to get base address (clear host bits)
+  const baseIP: IPv6 = [p1, p2, p3, p4, p5, p6, p7, p8];
+  for (let i = 0; i < 8; i++) {
+    baseIP[i] = baseIP[i] & netmask[i];
+  }
+
+  // For IPv6, broadcast is the same as the last address in the network
   // which is base with all host bits set to 1
   const broadcastIP: IPv6 = [...baseIP] as IPv6;
   const hostBits = 128 - prefixLength;
@@ -132,15 +141,8 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
   let lastUsableIP: IPv6 | null = null;
 
   if (prefixLength < 127) {
-    // First usable is base + 1
-    const firstUsable = [...baseIP] as IPv6;
-    let carry = 1;
-    for (let i = 7; i >= 0 && carry > 0; i--) {
-      const sum = firstUsable[i] + carry;
-      firstUsable[i] = sum & 0xffff;
-      carry = sum >> 16;
-    }
-    firstUsableIP = firstUsable;
+    // First usable is the network address (baseIP)
+    firstUsableIP = baseIP;
 
     // Last usable is broadcast - 1
     const lastUsable = [...broadcastIP] as IPv6;
