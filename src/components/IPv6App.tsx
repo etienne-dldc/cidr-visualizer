@@ -71,7 +71,7 @@ export function IPv6App() {
         />
       </div>
       <IPv6Bits ipv6={ipv6} mask={ipv6Mask} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
-      <NetworkInfoDisplay isIPv4={false} info={networkInfo} />
+      <NetworkInfoDisplay info={networkInfo} />
       <ReservedIPInfo info={reservedInfo} onCidrClick={handleCidrClick} />
     </Fragment>
   );

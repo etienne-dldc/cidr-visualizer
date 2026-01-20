@@ -1,47 +1,43 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowRightFromLine, ArrowRightToLine, GlobeIcon, LayersIcon, Share2Icon, ShieldIcon } from "lucide-react";
-import type { IPv4, IPv6 } from "../utils/ipv4";
 import { formatIPv6 } from "../utils/ipv6";
 import type { IPv4NetworkInfo, IPv6NetworkInfo } from "../utils/networkInfo";
 import { formatCount, formatIPv4 } from "../utils/networkInfo";
 
 interface NetworkInfoDisplayProps {
-  isIPv4: boolean;
   info: IPv4NetworkInfo | IPv6NetworkInfo;
 }
 
-export function NetworkInfoDisplay({ isIPv4, info }: NetworkInfoDisplayProps) {
-  const netmaskStr = isIPv4
-    ? formatIPv4(info.netmask as unknown as IPv4)
-    : formatIPv6(info.netmask as unknown as IPv6 as any);
+export function NetworkInfoDisplay({ info }: NetworkInfoDisplayProps) {
+  const netmaskStr = info.mode === "IPv4" ? formatIPv4(info.netmask) : formatIPv6(info.netmask);
 
-  const baseIPStr = isIPv4
-    ? formatIPv4(info.baseIP as unknown as IPv4)
-    : formatIPv6(info.baseIP as unknown as IPv6 as any);
-
-  const broadcastIPStr = isIPv4
-    ? formatIPv4(info.broadcastIP as unknown as IPv4)
-    : formatIPv6(info.broadcastIP as unknown as IPv6 as any);
+  const baseIPStr = info.mode === "IPv4" ? formatIPv4(info.baseIP) : formatIPv6(info.baseIP);
+  const broadcastIPStr =
+    info.broadcastIP === null
+      ? "-"
+      : info.mode === "IPv4"
+        ? formatIPv4(info.broadcastIP)
+        : formatIPv6(info.broadcastIP);
 
   const firstUsableStr =
-    info.firstUsableIP && isIPv4
-      ? formatIPv4(info.firstUsableIP as unknown as IPv4)
-      : info.firstUsableIP
-        ? formatIPv6(info.firstUsableIP as unknown as IPv6 as any)
-        : "—";
+    info.firstUsableIP === null
+      ? "-"
+      : info.mode === "IPv4"
+        ? formatIPv4(info.firstUsableIP)
+        : formatIPv6(info.firstUsableIP);
 
   const lastUsableStr =
-    info.lastUsableIP && isIPv4
-      ? formatIPv4(info.lastUsableIP as unknown as IPv4)
-      : info.lastUsableIP
-        ? formatIPv6(info.lastUsableIP as unknown as IPv6 as any)
-        : "—";
+    info.lastUsableIP === null
+      ? "-"
+      : info.mode === "IPv4"
+        ? formatIPv4(info.lastUsableIP)
+        : formatIPv6(info.lastUsableIP);
 
   const countStr = formatCount(info.count);
 
   return (
     <div className="bg-almond-silk rounded-lg p-5">
-      <div className={`grid ${isIPv4 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-6`}>
+      <div className={`grid ${info.mode === "IPv4" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-6`}>
         <NetworkProperty icon={ShieldIcon} label="Netmask" value={netmaskStr} />
         <NetworkProperty icon={GlobeIcon} label="CIDR Base IP" value={baseIPStr} />
         <NetworkProperty icon={Share2Icon} label="Broadcast IP" value={broadcastIPStr} />

@@ -70,7 +70,7 @@ export function IPv4App() {
         />
       </div>
       <IPv4Bits ipv4={ipv4} mask={ipv4Mask} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
-      <NetworkInfoDisplay isIPv4 info={networkInfo} />
+      <NetworkInfoDisplay info={networkInfo} />
       <ReservedIPInfo info={reservedInfo} onCidrClick={handleCidrClick} />
     </Fragment>
   );

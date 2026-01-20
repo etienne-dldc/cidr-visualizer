@@ -1,4 +1,4 @@
-import type { IPv6CIDR } from "./ipv4";
+import type { IPv6, IPv6CIDR } from "./ipv4";
 
 /**
  * Convert an IPv6 CIDR prefix length to a network mask
@@ -112,7 +112,7 @@ export function generateRandomIPv6InNetwork(ipv6: IPv6CIDR): IPv6CIDR {
   ];
 }
 
-export function formatIPv6(ipv6: IPv6CIDR): string {
+export function formatIPv6(ipv6: IPv6 | IPv6CIDR): string {
   const parts = ipv6.slice(0, 8) as number[];
 
   // Convert all parts to hex strings

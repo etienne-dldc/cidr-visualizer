@@ -1,18 +1,20 @@
 import type { IPv4, IPv4CIDR, IPv6, IPv6CIDR } from "./ipv4";
 
 export interface IPv4NetworkInfo {
+  mode: "IPv4";
   netmask: IPv4;
   baseIP: IPv4;
-  broadcastIP: IPv4;
+  broadcastIP: IPv4 | null;
   count: bigint;
   firstUsableIP: IPv4 | null;
   lastUsableIP: IPv4 | null;
 }
 
 export interface IPv6NetworkInfo {
+  mode: "IPv6";
   netmask: IPv6;
   baseIP: IPv6;
-  broadcastIP: IPv6;
+  broadcastIP: IPv6 | null;
   count: bigint;
   firstUsableIP: IPv6 | null;
   lastUsableIP: IPv6 | null;
@@ -46,12 +48,17 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   // Calculate broadcast IP
   const inverseMask = (1 << hostBits) - 1;
   const broadcastNum = baseNum | inverseMask;
-  const broadcastIP: IPv4 = [
-    (broadcastNum >>> 24) & 0xff,
-    (broadcastNum >>> 16) & 0xff,
-    (broadcastNum >>> 8) & 0xff,
-    broadcastNum & 0xff,
-  ];
+
+  // /31 and /32 don't have broadcast addresses
+  let broadcastIP: IPv4 | null = null;
+  if (prefixLength < 31) {
+    broadcastIP = [
+      (broadcastNum >>> 24) & 0xff,
+      (broadcastNum >>> 16) & 0xff,
+      (broadcastNum >>> 8) & 0xff,
+      broadcastNum & 0xff,
+    ];
+  }
 
   // Calculate count
   const count = BigInt(1) << BigInt(hostBits);
@@ -61,8 +68,14 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   let lastUsableIP: IPv4 | null = null;
 
   if (prefixLength < 31) {
-    // First usable is the network address (baseIP)
-    firstUsableIP = baseIP;
+    // First usable is base + 1 (skip network address)
+    const firstNum = baseNum + 1;
+    firstUsableIP = [
+      (firstNum >>> 24) & 0xff,
+      (firstNum >>> 16) & 0xff,
+      (firstNum >>> 8) & 0xff,
+      firstNum & 0xff,
+    ];
 
     // Last usable is broadcast - 1
     const lastNum = broadcastNum - 1;
@@ -73,13 +86,21 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
       lastNum & 0xff,
     ];
   } else if (prefixLength === 31) {
-    // /31 is point-to-point, both are usable
+    // /31 is point-to-point, both addresses are usable (no broadcast)
     firstUsableIP = baseIP;
-    lastUsableIP = broadcastIP;
+    // Last usable is base + 1
+    const lastNum = baseNum + 1;
+    lastUsableIP = [
+      (lastNum >>> 24) & 0xff,
+      (lastNum >>> 16) & 0xff,
+      (lastNum >>> 8) & 0xff,
+      lastNum & 0xff,
+    ];
   }
   // /32 has no usable IPs (single host)
 
   return {
+    mode: "IPv4",
     netmask,
     baseIP,
     broadcastIP,
@@ -108,28 +129,33 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
 
   // For IPv6, broadcast is the same as the last address in the network
   // which is base with all host bits set to 1
-  const broadcastIP: IPv6 = [...baseIP] as IPv6;
+  // /127 and /128 don't have broadcast addresses
+  let broadcastIP: IPv6 | null = null;
   const hostBits = 128 - prefixLength;
 
-  // Apply inverse mask to each part
-  for (let i = 0; i < 8; i++) {
-    const startBit = i * 16;
-    const endBit = startBit + 16;
-    const hostStartBit = prefixLength;
+  if (prefixLength < 127) {
+    broadcastIP = [...baseIP] as IPv6;
 
-    if (endBit <= hostStartBit) {
-      // This part is entirely in the network bits, skip it
-      continue;
-    }
+    // Apply inverse mask to each part
+    for (let i = 0; i < 8; i++) {
+      const startBit = i * 16;
+      const endBit = startBit + 16;
+      const hostStartBit = prefixLength;
 
-    if (startBit >= hostStartBit) {
-      // This part is entirely in the host bits, set all to 1
-      broadcastIP[i] = 0xffff;
-    } else {
-      // This part is partially in the host bits
-      const bitsInHost = endBit - hostStartBit;
-      const inverseMask = (1 << bitsInHost) - 1;
-      broadcastIP[i] |= inverseMask;
+      if (endBit <= hostStartBit) {
+        // This part is entirely in the network bits, skip it
+        continue;
+      }
+
+      if (startBit >= hostStartBit) {
+        // This part is entirely in the host bits, set all to 1
+        broadcastIP[i] = 0xffff;
+      } else {
+        // This part is partially in the host bits
+        const bitsInHost = endBit - hostStartBit;
+        const inverseMask = (1 << bitsInHost) - 1;
+        broadcastIP[i] |= inverseMask;
+      }
     }
   }
 
@@ -141,31 +167,49 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
   let lastUsableIP: IPv6 | null = null;
 
   if (prefixLength < 127) {
-    // First usable is the network address (baseIP)
-    firstUsableIP = baseIP;
+    // First usable is base + 1 (skip network address)
+    const firstUsable = [...baseIP] as IPv6;
+    let carry = 1;
+    for (let i = 7; i >= 0 && carry > 0; i--) {
+      const sum = firstUsable[i] + carry;
+      firstUsable[i] = sum & 0xffff;
+      carry = sum >> 16;
+    }
+    firstUsableIP = firstUsable;
 
     // Last usable is broadcast - 1
-    const lastUsable = [...broadcastIP] as IPv6;
-    let borrow = 1;
-    for (let i = 7; i >= 0 && borrow > 0; i--) {
-      const diff = lastUsable[i] - borrow;
-      if (diff < 0) {
-        lastUsable[i] = (diff + 0x10000) & 0xffff;
-        borrow = 1;
-      } else {
-        lastUsable[i] = diff;
-        borrow = 0;
+    if (broadcastIP) {
+      const lastUsable = [...broadcastIP] as IPv6;
+      let borrow = 1;
+      for (let i = 7; i >= 0 && borrow > 0; i--) {
+        const diff = lastUsable[i] - borrow;
+        if (diff < 0) {
+          lastUsable[i] = (diff + 0x10000) & 0xffff;
+          borrow = 1;
+        } else {
+          lastUsable[i] = diff;
+          borrow = 0;
+        }
       }
+      lastUsableIP = lastUsable;
+    }
+  } else if (prefixLength === 127) {
+    // /127 is point-to-point, both addresses are usable (no broadcast)
+    firstUsableIP = baseIP;
+    // Last usable is base + 1
+    const lastUsable = [...baseIP] as IPv6;
+    let carry = 1;
+    for (let i = 7; i >= 0 && carry > 0; i--) {
+      const sum = lastUsable[i] + carry;
+      lastUsable[i] = sum & 0xffff;
+      carry = sum >> 16;
     }
     lastUsableIP = lastUsable;
-  } else if (prefixLength === 127) {
-    // /127 is point-to-point
-    firstUsableIP = baseIP;
-    lastUsableIP = broadcastIP;
   }
   // /128 has no usable IPs (single host)
 
   return {
+    mode: "IPv6",
     netmask,
     baseIP,
     broadcastIP,
