@@ -1,5 +1,8 @@
+import type {
+  ReservedIPInfo,
+  ReservedIPMatch,
+} from "../shared/reservedIPTypes";
 import type { IPv4CIDR } from "./ipv4";
-import type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
 
 interface IPv4ReservedRange {
   cidr: string;
@@ -43,7 +46,8 @@ export const RESERVED_IPV4_RANGES: IPv4ReservedRange[] = [
     cidr: "169.254.0.0/16",
     info: {
       name: "Link-local",
-      description: "Used for link-local addresses between two hosts on a single link",
+      description:
+        "Used for link-local addresses between two hosts on a single link",
       rfc: "RFC 3927",
     },
   },
@@ -91,7 +95,8 @@ export const RESERVED_IPV4_RANGES: IPv4ReservedRange[] = [
     cidr: "198.18.0.0/15",
     info: {
       name: "Benchmarking",
-      description: "Used for testing of inter-network communications between subnets",
+      description:
+        "Used for testing of inter-network communications between subnets",
       rfc: "RFC 2544",
     },
   },
@@ -163,16 +168,19 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
   const [p1, p2, p3, p4] = ipv4;
   const ipInt = (p1 << 24) | (p2 << 16) | (p3 << 8) | p4;
 
-  let bestMatch: { range: IPv4ReservedRange; prefixLength: number } | null = null;
+  let bestMatch: { range: IPv4ReservedRange; prefixLength: number } | null =
+    null;
 
   for (const range of RESERVED_IPV4_RANGES) {
     const { parts, prefixLength } = parseCIDR(range.cidr);
 
     // Convert range address to 32-bit integer for comparison
-    const rangeInt = (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3];
+    const rangeInt =
+      (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3];
 
     // Create a mask for the prefix length
-    const mask = prefixLength === 0 ? 0 : (0xffffffff << (32 - prefixLength)) >>> 0;
+    const mask =
+      prefixLength === 0 ? 0 : (0xffffffff << (32 - prefixLength)) >>> 0;
 
     // Check if the IP is in this range
     if ((ipInt & mask) === (rangeInt & mask)) {
@@ -183,9 +191,13 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
     }
   }
 
-  return bestMatch ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr } : null;
+  return bestMatch
+    ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr }
+    : null;
 }
 
 // Re-export types for convenience
-export type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
-
+export type {
+  ReservedIPInfo,
+  ReservedIPMatch,
+} from "../shared/reservedIPTypes";

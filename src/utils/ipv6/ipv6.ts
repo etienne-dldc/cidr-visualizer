@@ -1,4 +1,24 @@
-import type { IPv6, IPv6CIDR } from "./ipv4";
+export type IPv6 = [
+  p1: number,
+  p2: number,
+  p3: number,
+  p4: number,
+  p5: number,
+  p6: number,
+  p7: number,
+  p8: number,
+];
+export type IPv6CIDR = [
+  p1: number,
+  p2: number,
+  p3: number,
+  p4: number,
+  p5: number,
+  p6: number,
+  p7: number,
+  p8: number,
+  prefixLength: number,
+];
 
 /**
  * Convert an IPv6 CIDR prefix length to a network mask

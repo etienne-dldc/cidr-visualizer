@@ -1,6 +1,7 @@
-import type { IPv4CIDR, IPv6CIDR } from "./ipv4";
-import { parseIPv4String } from "./parseIPv4String";
-import { parseIPv6String } from "./parseIPv6String";
+import type { IPv4CIDR } from "../ipv4/ipv4";
+import { parseIPv4String } from "../ipv4/parse";
+import type { IPv6CIDR } from "../ipv6/ipv6";
+import { parseIPv6String } from "../ipv6/parse";
 
 export interface DetectionResult {
   ipv4: IPv4CIDR | null;

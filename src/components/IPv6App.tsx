@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { formatIPv6, getIPv6Mask } from "../utils/ipv6";
-import { calculateIPv6NetworkInfo } from "../utils/networkInfo";
-import { parseIPv6String } from "../utils/parseIPv6String";
-import { checkIPv6Reserved } from "../utils/reservedIPv6";
+import { formatIPv6, getIPv6Mask } from "../utils/ipv6/ipv6";
+import { calculateIPv6NetworkInfo } from "../utils/ipv6/networkInfo";
+import { parseIPv6String } from "../utils/ipv6/parse";
+import { checkIPv6Reserved } from "../utils/ipv6/reserved";
 import { generateIPv6ShareableURL } from "../utils/urlParams";
 import { ActionButtonRow } from "./ActionButtonRow";
 import { useAppState } from "./AppStateProvider";

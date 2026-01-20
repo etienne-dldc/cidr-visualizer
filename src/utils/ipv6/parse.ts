@@ -1,4 +1,4 @@
-import type { IPv6CIDR } from "./ipv4";
+import type { IPv6CIDR } from "./ipv6";
 
 export function parseIPv6String(input: string): IPv6CIDR | null {
   const trimmed = input.trim();

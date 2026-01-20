@@ -1,7 +1,5 @@
-import type { IPv4CIDR } from "../utils/ipv4";
+import type { IPv4, IPv4CIDR } from "../utils/ipv4/ipv4";
 import { PartBits } from "./PartBits";
-
-import type { IPv4 } from "../utils/ipv4";
 
 export interface IPv4BitsProps {
   ipv4: IPv4CIDR;

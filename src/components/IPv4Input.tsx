@@ -1,4 +1,4 @@
-import { detectIPType } from "../utils/detectIPType";
+import { detectIPType } from "../utils/shared/detectIPType";
 import { useAppState } from "./AppStateProvider";
 import { DisplayInput, InputPart } from "./InputPart";
 

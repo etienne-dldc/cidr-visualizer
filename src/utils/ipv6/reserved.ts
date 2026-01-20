@@ -1,5 +1,8 @@
-import type { IPv6CIDR } from "./ipv4";
-import type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
+import type {
+  ReservedIPInfo,
+  ReservedIPMatch,
+} from "../shared/reservedIPTypes";
+import type { IPv6CIDR } from "./ipv6";
 
 interface IPv6ReservedRange {
   cidr: string;
@@ -67,7 +70,8 @@ export const RESERVED_IPV6_RANGES: IPv6ReservedRange[] = [
     cidr: "fc00::/7",
     info: {
       name: "Unique local address",
-      description: "Used for local communications (similar to IPv4 private addresses)",
+      description:
+        "Used for local communications (similar to IPv4 private addresses)",
       rfc: "RFC 4193",
     },
   },
@@ -125,9 +129,19 @@ function expandIPv6(address: string): string {
  * Returns the most specific match (longest prefix length)
  */
 export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPMatch | null {
-  const ipParts = [ipv6[0], ipv6[1], ipv6[2], ipv6[3], ipv6[4], ipv6[5], ipv6[6], ipv6[7]];
+  const ipParts = [
+    ipv6[0],
+    ipv6[1],
+    ipv6[2],
+    ipv6[3],
+    ipv6[4],
+    ipv6[5],
+    ipv6[6],
+    ipv6[7],
+  ];
 
-  let bestMatch: { range: IPv6ReservedRange; prefixLength: number } | null = null;
+  let bestMatch: { range: IPv6ReservedRange; prefixLength: number } | null =
+    null;
 
   for (const range of RESERVED_IPV6_RANGES) {
     const { parts, prefixLength } = parseCIDR(range.cidr);
@@ -169,9 +183,13 @@ export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPMatch | null {
     }
   }
 
-  return bestMatch ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr } : null;
+  return bestMatch
+    ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr }
+    : null;
 }
 
 // Re-export types for convenience
-export type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
-
+export type {
+  ReservedIPInfo,
+  ReservedIPMatch,
+} from "../shared/reservedIPTypes";

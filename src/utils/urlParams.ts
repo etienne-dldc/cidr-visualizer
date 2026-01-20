@@ -1,5 +1,6 @@
-import type { IPv4CIDR, IPv6CIDR } from "./ipv4";
-import { formatIPv6 } from "./ipv6";
+import type { IPv4CIDR } from "./ipv4/ipv4";
+import type { IPv6CIDR } from "./ipv6/ipv6";
+import { formatIPv6 } from "./ipv6/ipv6";
 
 /**
  * Read the 'ip' parameter from the current URL

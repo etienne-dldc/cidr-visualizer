@@ -1,5 +1,5 @@
 import { InfoIcon } from "lucide-react";
-import type { ReservedIPMatch } from "../utils/reservedIPTypes";
+import type { ReservedIPMatch } from "../utils/shared/reservedIPTypes";
 
 export interface ReservedIPInfoProps {
   info: ReservedIPMatch | null;

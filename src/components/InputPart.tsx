@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { incrementPart } from "../utils/number";
-import { parseDecimalPart } from "../utils/parse";
-import { parseHexPart } from "../utils/parseHex";
-import { cn } from "../utils/styles";
+import { incrementPart } from "../utils/shared/number";
+import { parseDecimalPart } from "../utils/shared/parse";
+import { parseHexPart } from "../utils/shared/parseHex";
+import { cn } from "../utils/shared/styles";
 
 const wrapper = cn("-mx-2 px-2 py-1");
 

@@ -1,4 +1,4 @@
-import { cn } from "../utils/styles";
+import { cn } from "../utils/shared/styles";
 
 interface ButtonCardProps {
   label: string;

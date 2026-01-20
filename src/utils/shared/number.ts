@@ -11,6 +11,7 @@ export function incrementPart(part: number, step: number, max: number): number {
     return clamp(part + step, 0, max);
   }
   // Not aligned, snap to next multiple of step
-  const next = step > 0 ? Math.ceil(part / step) * step : Math.ceil(part / step) * step;
+  const next =
+    step > 0 ? Math.ceil(part / step) * step : Math.ceil(part / step) * step;
   return clamp(next, 0, max);
 }
