@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { incrementPart } from "../utils/shared/number";
 import { parseDecimalPart } from "../utils/shared/parse";
 import { parseHexPart } from "../utils/shared/parseHex";
@@ -71,6 +71,12 @@ export function InputPart({
     setInternalValue(isHexadecimal ? value.toString(16) : value.toString());
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onClick = () => {
+    inputRef.current?.focus();
+  };
+
   const inputValue = focused ? internalValue : isHexadecimal ? value.toString(16) : value.toString();
 
   return (
@@ -83,8 +89,10 @@ export function InputPart({
       )}
       onMouseEnter={onHighlight}
       onMouseLeave={onUnhighlight}
+      onClick={onClick}
     >
       <input
+        ref={inputRef}
         type="text"
         placeholder="0"
         className="text-center font-mono leading-none outline-none"
