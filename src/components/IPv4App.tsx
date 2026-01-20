@@ -1,11 +1,11 @@
-import { ClipboardIcon, Dice1Icon, DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { getIPv4Mask } from "../utils/ipv4";
 import { calculateIPv4NetworkInfo } from "../utils/networkInfo";
 import { parseIPv4String } from "../utils/parseIPv4String";
 import { checkIPv4Reserved } from "../utils/reservedIPv4";
-import { ActionButton } from "./ActionButton";
+import { generateIPv4ShareableURL } from "../utils/urlParams";
+import { ActionButtonRow } from "./ActionButtonRow";
 import { useAppState } from "./AppStateProvider";
 import { IPv4Bits } from "./IPv4Bits";
 import { IPv4Input } from "./IPv4Input";
@@ -15,7 +15,6 @@ import { ReservedIPInfo } from "./ReservedIPInfo";
 export function IPv4App() {
   const { ipv4, dispatch } = useAppState();
   const [highlightedCell, setHighlightedCell] = useState<number | "prefix" | null>(null);
-  const [copiedState, setCopiedState] = useState<"cidr" | "ip" | null>(null);
 
   const ipv4Mask = getIPv4Mask(ipv4[4]);
   const networkInfo = calculateIPv4NetworkInfo(ipv4);
@@ -23,6 +22,7 @@ export function IPv4App() {
 
   const ipv4String = `${ipv4[0]}.${ipv4[1]}.${ipv4[2]}.${ipv4[3]}`;
   const cidrString = `${ipv4String}/${ipv4[4]}`;
+  const shareableURL = generateIPv4ShareableURL(ipv4);
 
   const handleCidrClick = (cidr: string) => {
     const parsed = parseIPv4String(cidr);
@@ -31,43 +31,17 @@ export function IPv4App() {
     }
   };
 
-  const handleCopyCidr = () => {
-    navigator.clipboard.writeText(cidrString).catch(() => {});
-    setCopiedState("cidr");
-    setTimeout(() => setCopiedState(null), 2000);
-  };
-
-  const handleCopyIP = () => {
-    navigator.clipboard.writeText(ipv4String).catch(() => {});
-    setCopiedState("ip");
-    setTimeout(() => setCopiedState(null), 2000);
-  };
-
   return (
     <Fragment>
-      <div className="grid grid-cols-4 gap-2">
-        <ActionButton
-          icon={DicesIcon}
-          label="Random Network"
-          onClick={() => dispatch({ kind: "RandomPrefixIPv4" })}
-          disabled={ipv4[4] === 0}
-          tooltip="Generate a random network address while keeping the same prefix length. Set IP bits to zero."
-        />
-        <ActionButton
-          icon={Dice1Icon}
-          label="Random IP"
-          onClick={() => dispatch({ kind: "RandomIPInNetworkIPv4" })}
-          disabled={ipv4[4] === 32}
-          tooltip="Generate a random host IP address within the current network"
-        />
-        <ActionButton
-          icon={ClipboardIcon}
-          label="Copy CIDR"
-          onClick={handleCopyCidr}
-          isCopied={copiedState === "cidr"}
-        />
-        <ActionButton icon={ClipboardIcon} label="Copy IP" onClick={handleCopyIP} isCopied={copiedState === "ip"} />
-      </div>
+      <ActionButtonRow
+        onRandomNetwork={() => dispatch({ kind: "RandomPrefixIPv4" })}
+        onRandomIP={() => dispatch({ kind: "RandomIPInNetworkIPv4" })}
+        cidrString={cidrString}
+        ipString={ipv4String}
+        isRandomNetworkDisabled={ipv4[4] === 0}
+        isRandomIPDisabled={ipv4[4] === 32}
+        shareableURL={shareableURL}
+      />
       <div className="flex flex-col items-center">
         <IPv4Input highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
       </div>

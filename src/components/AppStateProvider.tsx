@@ -1,8 +1,10 @@
 import { produce } from "immer";
 import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
+import { detectIPType } from "../utils/detectIPType";
 import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
 import { generateRandomIPv4CIDR, generateRandomIPv4InNetwork } from "../utils/ipv4";
 import { generateRandomIPv6CIDR, generateRandomIPv6InNetwork } from "../utils/ipv6";
+import { clearURLParams, readIPFromURL } from "../utils/urlParams";
 
 export interface TAppState {
   mode: "IPv4" | "IPv6";
@@ -59,11 +61,43 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
 }
 
 export function AppStateProvider({ children }: PropsWithChildren) {
-  const [state, dispatch] = useReducer(reducer, {
-    mode: "IPv4",
-    ipv4: [0, 0, 0, 0, 32],
-    ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 128],
-  });
+  // Try to parse IP from URL parameter
+  const initialState = useMemo(() => {
+    const ipParam = readIPFromURL();
+
+    if (ipParam) {
+      const detected = detectIPType(ipParam);
+
+      // Clear the URL parameter immediately
+      clearURLParams();
+
+      // Prefer IPv4 if both parse (shouldn't happen in practice)
+      if (detected.ipv4) {
+        return {
+          mode: "IPv4" as const,
+          ipv4: detected.ipv4,
+          ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 128] as IPv6CIDR,
+        };
+      }
+
+      if (detected.ipv6) {
+        return {
+          mode: "IPv6" as const,
+          ipv4: [0, 0, 0, 0, 32] as IPv4CIDR,
+          ipv6: detected.ipv6,
+        };
+      }
+    }
+
+    // Default state if no valid IP in URL
+    return {
+      mode: "IPv4" as const,
+      ipv4: [0, 0, 0, 0, 32] as IPv4CIDR,
+      ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 128] as IPv6CIDR,
+    };
+  }, []);
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const contextValue = useMemo(() => ({ ...state, dispatch }), [state, dispatch]);
 
