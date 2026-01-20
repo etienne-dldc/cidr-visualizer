@@ -88,8 +88,8 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   } else if (prefixLength === 31) {
     // /31 is point-to-point, both addresses are usable (no broadcast)
     firstUsableIP = baseIP;
-    // Last usable is base + 1
-    const lastNum = baseNum + 1;
+    // Last usable is the address with all host bits set to 1
+    const lastNum = baseNum | inverseMask;
     lastUsableIP = [
       (lastNum >>> 24) & 0xff,
       (lastNum >>> 16) & 0xff,
@@ -175,13 +175,27 @@ export function calculateIPv6NetworkInfo(cidr: IPv6CIDR): IPv6NetworkInfo {
   } else if (prefixLength === 127) {
     // /127 is point-to-point, both addresses are usable (no broadcast)
     firstUsableIP = baseIP;
-    // Last usable is base + 1
+    // Last usable is the address with all host bits set to 1
     const lastUsable = [...baseIP] as IPv6;
-    let carry = 1;
-    for (let i = 7; i >= 0 && carry > 0; i--) {
-      const sum = lastUsable[i] + carry;
-      lastUsable[i] = sum & 0xffff;
-      carry = sum >> 16;
+    for (let i = 0; i < 8; i++) {
+      const startBit = i * 16;
+      const endBit = startBit + 16;
+      const hostStartBit = prefixLength;
+
+      if (endBit <= hostStartBit) {
+        // This part is entirely in the network bits, skip it
+        continue;
+      }
+
+      if (startBit >= hostStartBit) {
+        // This part is entirely in the host bits, set all to 1
+        lastUsable[i] = 0xffff;
+      } else {
+        // This part is partially in the host bits
+        const bitsInHost = endBit - hostStartBit;
+        const inverseMask = (1 << bitsInHost) - 1;
+        lastUsable[i] |= inverseMask;
+      }
     }
     lastUsableIP = lastUsable;
   }
