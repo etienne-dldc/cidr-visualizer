@@ -1,14 +1,5 @@
 import type { IPv4CIDR } from "./ipv4";
-
-export interface ReservedIPInfo {
-  name: string;
-  description: string;
-  rfc?: string;
-}
-
-export interface ReservedIPMatch extends ReservedIPInfo {
-  cidr: string;
-}
+import type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
 
 interface IPv4ReservedRange {
   cidr: string;
@@ -188,3 +179,7 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
 
   return null;
 }
+
+// Re-export types for convenience
+export type { ReservedIPInfo, ReservedIPMatch } from "./reservedIPTypes";
+
