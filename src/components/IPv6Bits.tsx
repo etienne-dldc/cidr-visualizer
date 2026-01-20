@@ -16,7 +16,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
     <div className="grid grid-cols-2 gap-8 text-2xl">
       <PartBits
         part={p1}
-        prefixLength={Math.max(0, prefixLength)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 112))}
         index={0}
         bitWidth={16}
         highlightedClass={highlightedCell === 0 ? "bg-red-400" : null}
@@ -26,7 +26,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p2}
-        prefixLength={Math.max(0, prefixLength - 16)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 96))}
         index={1}
         bitWidth={16}
         highlightedClass={highlightedCell === 1 ? "bg-orange-400" : null}
@@ -36,7 +36,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p3}
-        prefixLength={Math.max(0, prefixLength - 32)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 80))}
         index={2}
         bitWidth={16}
         highlightedClass={highlightedCell === 2 ? "bg-amber-400" : null}
@@ -46,7 +46,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p4}
-        prefixLength={Math.max(0, prefixLength - 48)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 64))}
         index={3}
         bitWidth={16}
         highlightedClass={highlightedCell === 3 ? "bg-yellow-400" : null}
@@ -56,7 +56,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p5}
-        prefixLength={Math.max(0, prefixLength - 64)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 48))}
         index={4}
         bitWidth={16}
         highlightedClass={highlightedCell === 4 ? "bg-lime-400" : null}
@@ -66,7 +66,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p6}
-        prefixLength={Math.max(0, prefixLength - 80)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 32))}
         index={5}
         bitWidth={16}
         highlightedClass={highlightedCell === 5 ? "bg-green-400" : null}
@@ -76,7 +76,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p7}
-        prefixLength={Math.max(0, prefixLength - 96)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength - 16))}
         index={6}
         bitWidth={16}
         highlightedClass={highlightedCell === 6 ? "bg-emerald-400" : null}
@@ -86,7 +86,7 @@ export function IPv6Bits({ ipv6, highlightedCell, onHighlight }: IPv6BitsProps) 
       />
       <PartBits
         part={p8}
-        prefixLength={Math.max(0, prefixLength - 112)}
+        prefixLength={Math.max(0, Math.min(16, prefixLength))}
         index={7}
         bitWidth={16}
         highlightedClass={highlightedCell === 7 ? "bg-teal-400" : null}
