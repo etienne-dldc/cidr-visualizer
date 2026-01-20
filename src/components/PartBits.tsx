@@ -22,7 +22,7 @@ export function PartBits({
 }: PartBitsProps) {
   const bits = part.toString(2).padStart(bitWidth, "0").split("");
   const gridColsClass = bitWidth === 8 ? "grid-cols-8" : "grid-cols-16";
-  const maxPrefixLength = Math.min(prefixLength, bitWidth);
+  const maxPrefixLength = Math.min(Math.max(prefixLength, 0), bitWidth);
 
   return (
     <div
@@ -33,15 +33,16 @@ export function PartBits({
       {bits.map((bit, index) => {
         const isFirst = index === 0;
         const isLast = index === bits.length - 1;
-        const isPrefix = index >= bits.length - maxPrefixLength;
-        const isFirstPrefix = index === bits.length - maxPrefixLength;
+        const isPrefix = index < maxPrefixLength;
+        const isFirstPrefix = index === 0 && maxPrefixLength > 0;
+        const isLastPrefix = index === maxPrefixLength - 1;
         let roundedClass = "";
         if (highlightedPrefixClass) {
-          if (isFirstPrefix && isLast) {
+          if (isFirstPrefix && isLastPrefix) {
             roundedClass = "rounded";
           } else if (isFirstPrefix) {
             roundedClass = "rounded-l";
-          } else if (isLast) {
+          } else if (isLastPrefix) {
             roundedClass = "rounded-r";
           }
         } else if (highlightedClass) {

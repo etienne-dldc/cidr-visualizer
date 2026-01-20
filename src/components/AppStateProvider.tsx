@@ -27,7 +27,7 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         draft.ipv4 = action.ipv4;
         return;
       case "RandomIpv4": {
-        // Randomize bits but not covered by the prefix
+        // Randomize bits not covered by the prefix (host portion)
         const [p1, p2, p3, p4, prefixLength] = draft.ipv4;
         // Convert to string of bits
         let bits = (
@@ -37,13 +37,11 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
           p4.toString(2).padStart(8, "0")
         ).split("");
         bits.forEach((_, index) => {
-          if (index < bits.length - prefixLength) {
+          if (index >= prefixLength) {
+            // Randomize host bits (after the prefix)
             bits[index] = Math.random() < 0.5 ? "0" : "1";
-          } else {
-            bits[index] = "0";
           }
         });
-        // const randomizedBits = bits
         // Convert back to numbers
         const newP1 = parseInt(bits.slice(0, 8).join(""), 2);
         const newP2 = parseInt(bits.slice(8, 16).join(""), 2);
@@ -56,7 +54,7 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         draft.ipv6 = action.ipv6;
         return;
       case "RandomIpv6": {
-        // Randomize bits but not covered by the prefix
+        // Randomize bits not covered by the prefix (host portion)
         const [p1, p2, p3, p4, p5, p6, p7, p8, prefixLength] = draft.ipv6;
         // Convert to string of bits
         let bits = (
@@ -70,10 +68,9 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
           p8.toString(2).padStart(16, "0")
         ).split("");
         bits.forEach((_, index) => {
-          if (index < bits.length - prefixLength) {
+          if (index >= prefixLength) {
+            // Randomize host bits (after the prefix)
             bits[index] = Math.random() < 0.5 ? "0" : "1";
-          } else {
-            bits[index] = "0";
           }
         });
         // Convert back to numbers
@@ -96,8 +93,8 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
 export function AppStateProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = useReducer(reducer, {
     mode: "IPv4",
-    ipv4: [0, 0, 0, 0, 0],
-    ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ipv4: [0, 0, 0, 0, 32],
+    ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 128],
   });
 
   const contextValue = useMemo(() => ({ ...state, dispatch }), [state, dispatch]);
