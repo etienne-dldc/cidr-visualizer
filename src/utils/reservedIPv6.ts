@@ -122,9 +122,12 @@ function expandIPv6(address: string): string {
 
 /**
  * Check if an IPv6 address matches a reserved range
+ * Returns the most specific match (longest prefix length)
  */
 export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPMatch | null {
   const ipParts = [ipv6[0], ipv6[1], ipv6[2], ipv6[3], ipv6[4], ipv6[5], ipv6[6], ipv6[7]];
+
+  let bestMatch: { range: IPv6ReservedRange; prefixLength: number } | null = null;
 
   for (const range of RESERVED_IPV6_RANGES) {
     const { parts, prefixLength } = parseCIDR(range.cidr);
@@ -159,11 +162,14 @@ export function checkIPv6Reserved(ipv6: IPv6CIDR): ReservedIPMatch | null {
     }
 
     if (matches) {
-      return { ...range.info, cidr: range.cidr };
+      // Keep the match with the longest prefix (most specific)
+      if (!bestMatch || prefixLength > bestMatch.prefixLength) {
+        bestMatch = { range, prefixLength };
+      }
     }
   }
 
-  return null;
+  return bestMatch ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr } : null;
 }
 
 // Re-export types for convenience

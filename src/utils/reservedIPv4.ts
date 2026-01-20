@@ -157,15 +157,18 @@ function parseCIDR(cidr: string): { parts: number[]; prefixLength: number } {
 
 /**
  * Check if an IPv4 address matches a reserved range
+ * Returns the most specific match (longest prefix length)
  */
 export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
   const [p1, p2, p3, p4] = ipv4;
+  const ipInt = (p1 << 24) | (p2 << 16) | (p3 << 8) | p4;
+
+  let bestMatch: { range: IPv4ReservedRange; prefixLength: number } | null = null;
 
   for (const range of RESERVED_IPV4_RANGES) {
     const { parts, prefixLength } = parseCIDR(range.cidr);
 
-    // Convert both addresses to 32-bit integers for comparison
-    const ipInt = (p1 << 24) | (p2 << 16) | (p3 << 8) | p4;
+    // Convert range address to 32-bit integer for comparison
     const rangeInt = (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3];
 
     // Create a mask for the prefix length
@@ -173,11 +176,14 @@ export function checkIPv4Reserved(ipv4: IPv4CIDR): ReservedIPMatch | null {
 
     // Check if the IP is in this range
     if ((ipInt & mask) === (rangeInt & mask)) {
-      return { ...range.info, cidr: range.cidr };
+      // Keep the match with the longest prefix (most specific)
+      if (!bestMatch || prefixLength > bestMatch.prefixLength) {
+        bestMatch = { range, prefixLength };
+      }
     }
   }
 
-  return null;
+  return bestMatch ? { ...bestMatch.range.info, cidr: bestMatch.range.cidr } : null;
 }
 
 // Re-export types for convenience
