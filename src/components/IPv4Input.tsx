@@ -1,16 +1,15 @@
 import { detectIPType } from "../utils/detectIPType";
-import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
+import { useAppState } from "./AppStateProvider";
 import { DisplayInput, InputPart } from "./InputPart";
 
 export interface IPv4InputProps {
-  ipv4: IPv4CIDR;
-  onChange: (ipv4: IPv4CIDR) => void;
   highlightedCell?: number | "prefix" | null;
   onHighlight?: (cell: number | "prefix" | null) => void;
-  onModeSwitch?: (mode: "IPv4" | "IPv6", ipData: IPv4CIDR | IPv6CIDR) => void;
 }
 
-export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onModeSwitch }: IPv4InputProps) {
+export function IPv4Input({ highlightedCell, onHighlight }: IPv4InputProps) {
+  const { ipv4, dispatch } = useAppState();
+
   const [part1, part2, part3, part4, prefixLength] = ipv4;
 
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
@@ -19,15 +18,15 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
 
     // Try IPv4 first (since we're in IPv4 input)
     if (detection.ipv4) {
-      onChange(detection.ipv4);
+      dispatch({ kind: "SetIPv4", ipv4: detection.ipv4 });
       e.preventDefault();
       (document.activeElement as HTMLInputElement)?.blur();
       return;
     }
 
     // If IPv4 didn't work but IPv6 did, switch mode and pass the IPv6 data
-    if (detection.ipv6 && onModeSwitch) {
-      onModeSwitch("IPv6", detection.ipv6);
+    if (detection.ipv6) {
+      dispatch({ kind: "SetIPv6", ipv6: detection.ipv6 });
       e.preventDefault();
       (document.activeElement as HTMLInputElement)?.blur();
       return;
@@ -38,7 +37,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
     <div className="relative flex flex-row align-baseline text-3xl sm:text-5xl" onPaste={handlePaste}>
       <InputPart
         value={part1}
-        onChange={(value) => onChange([value, part2, part3, part4, prefixLength])}
+        onChange={(value) => dispatch({ kind: "SetIPv4", ipv4: [value, part2, part3, part4, prefixLength] })}
         max={255}
         shiftStep={16}
         isHexadecimal={false}
@@ -50,7 +49,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
       <DisplayInput value="." />
       <InputPart
         value={part2}
-        onChange={(value) => onChange([part1, value, part3, part4, prefixLength])}
+        onChange={(value) => dispatch({ kind: "SetIPv4", ipv4: [part1, value, part3, part4, prefixLength] })}
         max={255}
         shiftStep={16}
         isHexadecimal={false}
@@ -62,7 +61,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
       <DisplayInput value="." />
       <InputPart
         value={part3}
-        onChange={(value) => onChange([part1, part2, value, part4, prefixLength])}
+        onChange={(value) => dispatch({ kind: "SetIPv4", ipv4: [part1, part2, value, part4, prefixLength] })}
         max={255}
         shiftStep={16}
         isHexadecimal={false}
@@ -74,7 +73,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
       <DisplayInput value="." />
       <InputPart
         value={part4}
-        onChange={(value) => onChange([part1, part2, part3, value, prefixLength])}
+        onChange={(value) => dispatch({ kind: "SetIPv4", ipv4: [part1, part2, part3, value, prefixLength] })}
         max={255}
         shiftStep={16}
         isHexadecimal={false}
@@ -86,7 +85,7 @@ export function IPv4Input({ ipv4, onChange, highlightedCell, onHighlight, onMode
       <DisplayInput value="/" />
       <InputPart
         value={prefixLength}
-        onChange={(value) => onChange([part1, part2, part3, part4, value])}
+        onChange={(value) => dispatch({ kind: "SetIPv4", ipv4: [part1, part2, part3, part4, value] })}
         max={32}
         shiftStep={4}
         isHexadecimal={false}

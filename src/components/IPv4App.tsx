@@ -62,18 +62,7 @@ export function IPv4App() {
         <ActionButton icon={ClipboardIcon} label="Copy IP" onClick={handleCopyIP} isCopied={copiedState === "ip"} />
       </div>
       <div className="flex flex-col items-center">
-        <IPv4Input
-          ipv4={ipv4}
-          onChange={(newIpv4) => dispatch({ kind: "SetIPv4", ipv4: newIpv4 })}
-          highlightedCell={highlightedCell}
-          onHighlight={setHighlightedCell}
-          onModeSwitch={(mode, ipData) => {
-            dispatch({ kind: "SetMode", mode });
-            if (mode === "IPv6") {
-              dispatch({ kind: "SetIPv6", ipv6: ipData as any });
-            }
-          }}
-        />
+        <IPv4Input highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
       </div>
       <IPv4Bits ipv4={ipv4} mask={ipv4Mask} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
       <NetworkInfoDisplay info={networkInfo} />

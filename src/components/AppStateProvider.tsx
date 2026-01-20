@@ -15,9 +15,9 @@ const AppStateContext = createContext<(TAppState & { dispatch: ActionDispatch<[a
 export type TAppAction =
   | { kind: "SetMode"; mode: TAppState["mode"] }
   | { kind: "SetIPv4"; ipv4: IPv4CIDR }
+  | { kind: "SetIPv6"; ipv6: IPv6CIDR }
   | { kind: "RandomPrefixIPv4" }
   | { kind: "RandomIPInNetworkIPv4" }
-  | { kind: "SetIPv6"; ipv6: IPv6CIDR }
   | { kind: "RandomPrefixIPv6" }
   | { kind: "RandomIPInNetworkIPv6" };
 
@@ -29,6 +29,11 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         return;
       case "SetIPv4":
         draft.ipv4 = action.ipv4;
+        draft.mode = "IPv4";
+        return;
+      case "SetIPv6":
+        draft.ipv6 = action.ipv6;
+        draft.mode = "IPv6";
         return;
       case "RandomPrefixIPv4": {
         const prefixLength = draft.ipv4[4];
@@ -39,9 +44,6 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         draft.ipv4 = generateRandomIPv4InNetwork(draft.ipv4);
         return;
       }
-      case "SetIPv6":
-        draft.ipv6 = action.ipv6;
-        return;
       case "RandomPrefixIPv6": {
         const prefixLength = draft.ipv6[8];
         draft.ipv6 = generateRandomIPv6CIDR(prefixLength);
