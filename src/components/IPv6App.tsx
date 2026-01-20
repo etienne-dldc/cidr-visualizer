@@ -2,7 +2,7 @@ import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { formatIPv6 } from "../utils/ipv6";
-import { checkIPv6Reserved } from "../utils/reservedIPs";
+import { checkIPv6Reserved } from "../utils/reservedIPv6";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv6Bits } from "./IPv6Bits";

@@ -1,7 +1,7 @@
 import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { checkIPv4Reserved } from "../utils/reservedIPs";
+import { checkIPv4Reserved } from "../utils/reservedIPv4";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv4Bits } from "./IPv4Bits";
