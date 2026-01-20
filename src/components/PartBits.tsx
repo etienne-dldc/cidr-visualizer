@@ -22,7 +22,7 @@ export function PartBits({
 }: PartBitsProps) {
   const bits = part.toString(2).padStart(bitWidth, "0").split("");
   const gridColsClass = bitWidth === 8 ? "grid-cols-8" : "grid-cols-16";
-  const maxPrefixLength = Math.min(prefixLength, bitWidth);
+  const maxPrefixLength = Math.max(0, Math.min(prefixLength, bitWidth));
 
   return (
     <div
@@ -33,15 +33,17 @@ export function PartBits({
       {bits.map((bit, index) => {
         const isFirst = index === 0;
         const isLast = index === bits.length - 1;
-        const isPrefix = index >= bits.length - maxPrefixLength;
-        const isFirstPrefix = index === bits.length - maxPrefixLength;
+        // Prefix represents HOST bits (from the end), so network bits are the ones BEFORE the host bits
+        const isNetworkBit = maxPrefixLength > 0 && index < (bitWidth - maxPrefixLength);
+        const isFirstNetworkBit = maxPrefixLength > 0 && index === 0 && maxPrefixLength < bitWidth;
+        const isLastNetworkBit = maxPrefixLength > 0 && index === (bitWidth - maxPrefixLength - 1);
         let roundedClass = "";
-        if (highlightedPrefixClass) {
-          if (isFirstPrefix && isLast) {
+        if (highlightedPrefixClass && maxPrefixLength > 0 && maxPrefixLength < bitWidth) {
+          if (isFirstNetworkBit && isLastNetworkBit) {
             roundedClass = "rounded";
-          } else if (isFirstPrefix) {
+          } else if (isFirstNetworkBit) {
             roundedClass = "rounded-l";
-          } else if (isLast) {
+          } else if (isLastNetworkBit) {
             roundedClass = "rounded-r";
           }
         } else if (highlightedClass) {
@@ -62,11 +64,11 @@ export function PartBits({
               // isFirst && "pl-4",
               // isLast && "pr-4",
               highlightedClass,
-              isPrefix && highlightedPrefixClass,
+              isNetworkBit && highlightedPrefixClass,
               roundedClass,
             )}
           >
-            <span className={isPrefix ? "opacity-50" : undefined}>{bit}</span>
+            <span className={isNetworkBit ? "opacity-50" : undefined}>{bit}</span>
           </div>
         );
       })}

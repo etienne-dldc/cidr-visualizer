@@ -16,7 +16,7 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
     <div className="grid grid-cols-4 gap-8 text-2xl">
       <PartBits
         part={part1}
-        prefixLength={prefixLength - 24}
+        prefixLength={Math.max(0, Math.min(8, prefixLength - 24))}
         index={0}
         bitWidth={8}
         highlightedClass={highlightedCell === 0 ? "bg-red-400" : null}
@@ -26,7 +26,7 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part2}
-        prefixLength={prefixLength - 16}
+        prefixLength={Math.max(0, Math.min(8, prefixLength - 16))}
         index={1}
         bitWidth={8}
         highlightedClass={highlightedCell === 1 ? "bg-orange-400" : null}
@@ -36,7 +36,7 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part3}
-        prefixLength={prefixLength - 8}
+        prefixLength={Math.max(0, Math.min(8, prefixLength - 8))}
         index={2}
         bitWidth={8}
         highlightedClass={highlightedCell === 2 ? "bg-amber-400" : null}
@@ -46,7 +46,7 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part4}
-        prefixLength={prefixLength}
+        prefixLength={Math.max(0, Math.min(8, prefixLength))}
         index={3}
         bitWidth={8}
         highlightedClass={highlightedCell === 3 ? "bg-yellow-400" : null}
