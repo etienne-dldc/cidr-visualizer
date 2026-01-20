@@ -1,5 +1,5 @@
-import type { IPv6CIDR } from "../utils/ipv4";
-import { parseIPv6String } from "../utils/parseIPv6String";
+import { detectIPType } from "../utils/detectIPType";
+import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
 import { DisplayInput, InputPart } from "./InputPart";
 
 export interface IPv6InputProps {
@@ -7,18 +7,30 @@ export interface IPv6InputProps {
   onChange: (ipv6: IPv6CIDR) => void;
   highlightedCell?: number | "prefix" | null;
   onHighlight?: (cell: number | "prefix" | null) => void;
+  onModeSwitch?: (mode: "IPv4" | "IPv6", ipData: IPv4CIDR | IPv6CIDR) => void;
 }
 
-export function IPv6Input({ ipv6, onChange, highlightedCell, onHighlight }: IPv6InputProps) {
+export function IPv6Input({ ipv6, onChange, highlightedCell, onHighlight, onModeSwitch }: IPv6InputProps) {
   const [p1, p2, p3, p4, p5, p6, p7, p8, prefixLength] = ipv6;
 
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     const pastedText = e.clipboardData.getData("text");
-    const parsed = parseIPv6String(pastedText);
-    if (parsed) {
-      onChange(parsed);
+    const detection = detectIPType(pastedText);
+
+    // Try IPv6 first (since we're in IPv6 input)
+    if (detection.ipv6) {
+      onChange(detection.ipv6);
       e.preventDefault();
       (document.activeElement as HTMLInputElement)?.blur();
+      return;
+    }
+
+    // If IPv6 didn't work but IPv4 did, switch mode and pass the IPv4 data
+    if (detection.ipv4 && onModeSwitch) {
+      onModeSwitch("IPv4", detection.ipv4);
+      e.preventDefault();
+      (document.activeElement as HTMLInputElement)?.blur();
+      return;
     }
   };
 

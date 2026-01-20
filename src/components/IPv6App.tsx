@@ -68,6 +68,12 @@ export function IPv6App() {
           onChange={(newIpv6) => dispatch({ kind: "SetIPv6", ipv6: newIpv6 })}
           highlightedCell={highlightedCell}
           onHighlight={setHighlightedCell}
+          onModeSwitch={(mode, ipData) => {
+            dispatch({ kind: "SetMode", mode });
+            if (mode === "IPv4") {
+              dispatch({ kind: "SetIPv4", ipv4: ipData as any });
+            }
+          }}
         />
       </div>
       <IPv6Bits ipv6={ipv6} mask={ipv6Mask} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
