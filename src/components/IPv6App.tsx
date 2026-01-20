@@ -1,11 +1,11 @@
-import { DicesIcon } from "lucide-react";
+import { ClipboardIcon, Dice1Icon, DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { formatIPv6, getIPv6Mask } from "../utils/ipv6";
 import { parseIPv6String } from "../utils/parseIPv6String";
 import { checkIPv6Reserved } from "../utils/reservedIPv6";
+import { ActionButton } from "./ActionButton";
 import { useAppState } from "./AppStateProvider";
-import { CopyButton } from "./CopyButton";
 import { IPv6Bits } from "./IPv6Bits";
 import { IPv6Input } from "./IPv6Input";
 import { ReservedIPInfo } from "./ReservedIPInfo";
@@ -13,6 +13,7 @@ import { ReservedIPInfo } from "./ReservedIPInfo";
 export function IPv6App() {
   const { ipv6, dispatch } = useAppState();
   const [highlightedCell, setHighlightedCell] = useState<number | "prefix" | null>(null);
+  const [copiedState, setCopiedState] = useState<"cidr" | "ip" | null>(null);
 
   const ipv6String = formatIPv6(ipv6);
   const ipv6WithPrefix = `${ipv6String}/${ipv6[8]}`;
@@ -29,13 +30,35 @@ export function IPv6App() {
     }
   };
 
+  const handleCopyCidr = () => {
+    navigator.clipboard.writeText(ipv6WithPrefix).catch(() => {});
+    setCopiedState("cidr");
+    setTimeout(() => setCopiedState(null), 2000);
+  };
+
+  const handleCopyIP = () => {
+    navigator.clipboard.writeText(ipv6String).catch(() => {});
+    setCopiedState("ip");
+    setTimeout(() => setCopiedState(null), 2000);
+  };
+
   return (
     <Fragment>
-      <div className="flex flex-row items-center gap-4">
-        <button className="rounded-lg p-2 hover:bg-black/10" onClick={() => dispatch({ kind: "RandomIpv6" })}>
-          <DicesIcon size={36} />
-        </button>
-        <CopyButton textToCopy={ipv6WithPrefix} />
+      <div className="grid grid-cols-4 gap-2">
+        <ActionButton icon={DicesIcon} label="Random Prefix" onClick={() => dispatch({ kind: "RandomPrefixIPv6" })} />
+        <ActionButton
+          icon={Dice1Icon}
+          label="Random IP"
+          onClick={() => dispatch({ kind: "RandomIPInNetworkIPv6" })}
+          disabled={ipv6[8] === 128}
+        />
+        <ActionButton
+          icon={ClipboardIcon}
+          label="Copy CIDR"
+          onClick={handleCopyCidr}
+          isCopied={copiedState === "cidr"}
+        />
+        <ActionButton icon={ClipboardIcon} label="Copy IP" onClick={handleCopyIP} isCopied={copiedState === "ip"} />
       </div>
       <div className="text-sm text-gray-600">Mask: {maskString}</div>
       <IPv6Input

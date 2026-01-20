@@ -1,8 +1,8 @@
 import { produce } from "immer";
 import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
 import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
-import { generateRandomIPv4CIDR } from "../utils/ipv4";
-import { generateRandomIPv6CIDR } from "../utils/ipv6";
+import { generateRandomIPv4CIDR, generateRandomIPv4InNetwork } from "../utils/ipv4";
+import { generateRandomIPv6CIDR, generateRandomIPv6InNetwork } from "../utils/ipv6";
 
 export interface TAppState {
   mode: "IPv4" | "IPv6";
@@ -15,9 +15,11 @@ const AppStateContext = createContext<(TAppState & { dispatch: ActionDispatch<[a
 export type TAppAction =
   | { kind: "SetMode"; mode: TAppState["mode"] }
   | { kind: "SetIPv4"; ipv4: IPv4CIDR }
-  | { kind: "RandomIpv4" }
+  | { kind: "RandomPrefixIPv4" }
+  | { kind: "RandomIPInNetworkIPv4" }
   | { kind: "SetIPv6"; ipv6: IPv6CIDR }
-  | { kind: "RandomIpv6" };
+  | { kind: "RandomPrefixIPv6" }
+  | { kind: "RandomIPInNetworkIPv6" };
 
 function reducer(state: TAppState, action: TAppAction): TAppState {
   return produce(state, (draft) => {
@@ -28,17 +30,25 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
       case "SetIPv4":
         draft.ipv4 = action.ipv4;
         return;
-      case "RandomIpv4": {
+      case "RandomPrefixIPv4": {
         const prefixLength = draft.ipv4[4];
         draft.ipv4 = generateRandomIPv4CIDR(prefixLength);
+        return;
+      }
+      case "RandomIPInNetworkIPv4": {
+        draft.ipv4 = generateRandomIPv4InNetwork(draft.ipv4);
         return;
       }
       case "SetIPv6":
         draft.ipv6 = action.ipv6;
         return;
-      case "RandomIpv6": {
+      case "RandomPrefixIPv6": {
         const prefixLength = draft.ipv6[8];
         draft.ipv6 = generateRandomIPv6CIDR(prefixLength);
+        return;
+      }
+      case "RandomIPInNetworkIPv6": {
+        draft.ipv6 = generateRandomIPv6InNetwork(draft.ipv6);
         return;
       }
     }

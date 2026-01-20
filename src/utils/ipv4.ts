@@ -75,3 +75,34 @@ export function generateRandomIPv4CIDR(prefixLength: number): IPv4CIDR {
     prefixLength,
   ];
 }
+
+/**
+ * Generate a random IPv4 CIDR by randomizing only the host bits (after the prefix)
+ * @param ipv4 - Current IPv4 CIDR
+ * @returns Random IPv4 CIDR with randomized host bits
+ */
+export function generateRandomIPv4InNetwork(ipv4: IPv4CIDR): IPv4CIDR {
+  const [p1, p2, p3, p4, prefixLength] = ipv4;
+  const currentBytes: number[] = [p1, p2, p3, p4];
+
+  // Get the network mask
+  const mask = getIPv4Mask(prefixLength);
+
+  // Create an inverse mask to identify host bits
+  const hostMask: number[] = mask.map((m) => ~m & 0xff);
+
+  // Generate random bytes and extract only host bits
+  const randomBytes: number[] = [
+    Math.floor(Math.random() * 256),
+    Math.floor(Math.random() * 256),
+    Math.floor(Math.random() * 256),
+    Math.floor(Math.random() * 256),
+  ];
+
+  const newBytes: number[] = randomBytes.map(
+    (byte, index) =>
+      (currentBytes[index] & mask[index]) | (byte & hostMask[index]),
+  );
+
+  return [newBytes[0], newBytes[1], newBytes[2], newBytes[3], prefixLength];
+}
