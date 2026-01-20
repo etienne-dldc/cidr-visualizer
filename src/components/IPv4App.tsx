@@ -1,8 +1,8 @@
 import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import type { IPv4CIDR } from "../utils/ipv4";
 import { checkIPv4Reserved } from "../utils/reservedIPv4";
+import { parseIPv4String } from "../utils/parseIPv4String";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv4Bits } from "./IPv4Bits";
@@ -16,12 +16,10 @@ export function IPv4App() {
   const reservedInfo = checkIPv4Reserved(ipv4);
 
   const handleCidrClick = (cidr: string) => {
-    const [address, prefix] = cidr.split("/");
-    const parts = address.split(".").map((p) => parseInt(p, 10));
-    const prefixLength = parseInt(prefix, 10);
-    
-    const newIpv4: IPv4CIDR = [parts[0], parts[1], parts[2], parts[3], prefixLength];
-    dispatch({ kind: "SetIPv4", ipv4: newIpv4 });
+    const parsed = parseIPv4String(cidr);
+    if (parsed) {
+      dispatch({ kind: "SetIPv4", ipv4: parsed });
+    }
   };
 
   return (
