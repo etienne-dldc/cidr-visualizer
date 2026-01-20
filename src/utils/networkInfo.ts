@@ -46,7 +46,13 @@ export function calculateIPv4NetworkInfo(cidr: IPv4CIDR): IPv4NetworkInfo {
   ];
 
   // Calculate broadcast IP
-  const inverseMask = (1 << hostBits) - 1;
+  // Handle edge case where hostBits >= 32 (use BigInt to avoid overflow)
+  let inverseMask: number;
+  if (hostBits >= 32) {
+    inverseMask = 0xffffffff;
+  } else {
+    inverseMask = (1 << hostBits) - 1;
+  }
   const broadcastNum = baseNum | inverseMask;
 
   // /31 and /32 don't have broadcast addresses
