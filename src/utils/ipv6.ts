@@ -1,5 +1,72 @@
 import type { IPv6CIDR } from "./ipv4";
 
+/**
+ * Convert an IPv6 CIDR prefix length to a network mask
+ * @param prefixLength - CIDR prefix length (0-128)
+ * @returns IPv6 mask as [p1, p2, p3, p4, p5, p6, p7, p8]
+ */
+export function getIPv6Mask(
+  prefixLength: number,
+): [number, number, number, number, number, number, number, number] {
+  const mask: number[] = [0, 0, 0, 0, 0, 0, 0, 0];
+
+  for (let i = 0; i < prefixLength; i++) {
+    const partIndex = Math.floor(i / 16);
+    const bitIndex = 15 - (i % 16);
+    mask[partIndex] |= 1 << bitIndex;
+  }
+
+  return mask as [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+}
+
+/**
+ * Generate a random IPv6 CIDR by randomizing host bits and setting network bits to 0
+ * @param prefixLength - CIDR prefix length (0-128)
+ * @returns Random IPv6 CIDR with the given prefix length
+ */
+export function generateRandomIPv6CIDR(prefixLength: number): IPv6CIDR {
+  // Generate random 16-bit parts
+  const randomParts: number[] = [
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+    Math.floor(Math.random() * 65536),
+  ];
+
+  // Get the network mask to zero out host bits
+  const mask = getIPv6Mask(prefixLength);
+
+  // Apply mask to keep network bits and randomize host bits
+  const maskedParts: number[] = randomParts.map(
+    (part, index) => part & mask[index],
+  );
+
+  return [
+    maskedParts[0],
+    maskedParts[1],
+    maskedParts[2],
+    maskedParts[3],
+    maskedParts[4],
+    maskedParts[5],
+    maskedParts[6],
+    maskedParts[7],
+    prefixLength,
+  ];
+}
+
 export function formatIPv6(ipv6: IPv6CIDR): string {
   const parts = ipv6.slice(0, 8) as number[];
 

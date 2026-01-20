@@ -1,14 +1,18 @@
 import type { IPv4CIDR } from "../utils/ipv4";
 import { PartBits } from "./PartBits";
 
+import type { IPv4 } from "../utils/ipv4";
+
 export interface IPv4BitsProps {
   ipv4: IPv4CIDR;
+  mask: IPv4;
   highlightedCell?: number | "prefix" | null;
   onHighlight?: (cell: number | "prefix" | null) => void;
 }
 
-export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) {
-  const [part1, part2, part3, part4, prefixLength] = ipv4;
+export function IPv4Bits({ ipv4, mask, highlightedCell, onHighlight }: IPv4BitsProps) {
+  const [part1, part2, part3, part4] = ipv4;
+  const [mask1, mask2, mask3, mask4] = mask;
 
   const highlightedPrefixClass = highlightedCell === "prefix" ? "bg-gray-400" : null;
 
@@ -16,9 +20,8 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
     <div className="grid grid-cols-4 gap-8 text-2xl">
       <PartBits
         part={part1}
-        prefixLength={Math.max(0, Math.min(8, prefixLength - 24))}
-        index={0}
-        bitWidth={8}
+        mask={mask1}
+        length={8}
         highlightedClass={highlightedCell === 0 ? "bg-red-400" : null}
         highlightedPrefixClass={highlightedPrefixClass}
         onHighlight={() => onHighlight?.(0)}
@@ -26,9 +29,8 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part2}
-        prefixLength={Math.max(0, Math.min(8, prefixLength - 16))}
-        index={1}
-        bitWidth={8}
+        mask={mask2}
+        length={8}
         highlightedClass={highlightedCell === 1 ? "bg-orange-400" : null}
         highlightedPrefixClass={highlightedPrefixClass}
         onHighlight={() => onHighlight?.(1)}
@@ -36,9 +38,8 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part3}
-        prefixLength={Math.max(0, Math.min(8, prefixLength - 8))}
-        index={2}
-        bitWidth={8}
+        mask={mask3}
+        length={8}
         highlightedClass={highlightedCell === 2 ? "bg-amber-400" : null}
         highlightedPrefixClass={highlightedPrefixClass}
         onHighlight={() => onHighlight?.(2)}
@@ -46,9 +47,8 @@ export function IPv4Bits({ ipv4, highlightedCell, onHighlight }: IPv4BitsProps) 
       />
       <PartBits
         part={part4}
-        prefixLength={Math.max(0, Math.min(8, prefixLength))}
-        index={3}
-        bitWidth={8}
+        mask={mask4}
+        length={8}
         highlightedClass={highlightedCell === 3 ? "bg-yellow-400" : null}
         highlightedPrefixClass={highlightedPrefixClass}
         onHighlight={() => onHighlight?.(3)}

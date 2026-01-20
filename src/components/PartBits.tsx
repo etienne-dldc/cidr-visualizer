@@ -2,9 +2,8 @@ import { cn } from "../utils/styles";
 
 export interface PartBitsProps {
   part: number;
-  prefixLength: number;
-  index: number;
-  bitWidth: number;
+  mask: number;
+  length: number;
   highlightedPrefixClass: string | null;
   highlightedClass: string | null;
   onHighlight?: () => void;
@@ -13,37 +12,39 @@ export interface PartBitsProps {
 
 export function PartBits({
   part,
-  prefixLength,
-  bitWidth,
+  mask,
+  length,
   highlightedClass,
   highlightedPrefixClass,
   onHighlight,
   onUnhighlight,
 }: PartBitsProps) {
-  const bits = part.toString(2).padStart(bitWidth, "0").split("");
-  const gridColsClass = bitWidth === 8 ? "grid-cols-8" : "grid-cols-16";
-  const maxPrefixLength = Math.max(0, Math.min(prefixLength, bitWidth));
+  const bits = part.toString(2).padStart(length, "0").split("");
+  const maskBits = mask
+    .toString(2)
+    .padStart(length, "0")
+    .split("")
+    .map((b) => b === "1");
+  const gridColsClass = length === 8 ? "grid-cols-[repeat(8,auto)]" : "grid-cols-[repeat(16,auto)]";
 
   return (
-    <div
-      className={cn("grid grid-flow-col grid-cols-[repeat(8,auto)]", gridColsClass)}
-      onMouseEnter={onHighlight}
-      onMouseLeave={onUnhighlight}
-    >
+    <div className={cn("grid grid-flow-col", gridColsClass)} onMouseEnter={onHighlight} onMouseLeave={onUnhighlight}>
       {bits.map((bit, index) => {
         const isFirst = index === 0;
         const isLast = index === bits.length - 1;
-        // Prefix represents HOST bits (from the end), so network bits are the ones BEFORE the host bits
-        const isNetworkBit = maxPrefixLength > 0 && index < (bitWidth - maxPrefixLength);
-        const isFirstNetworkBit = maxPrefixLength > 0 && index === 0 && maxPrefixLength < bitWidth;
-        const isLastNetworkBit = maxPrefixLength > 0 && index === (bitWidth - maxPrefixLength - 1);
+        const isMasked = !maskBits[index];
+        const isPrevMasked = index > 0 ? !maskBits[index - 1] : false;
+        const isNextMasked = index < bits.length - 1 ? !maskBits[index + 1] : false;
+        const isFirstMasked = isMasked && !isPrevMasked;
+        const isLastMasked = isMasked && !isNextMasked;
+
         let roundedClass = "";
-        if (highlightedPrefixClass && maxPrefixLength > 0 && maxPrefixLength < bitWidth) {
-          if (isFirstNetworkBit && isLastNetworkBit) {
+        if (isMasked) {
+          if (isFirstMasked && isLastMasked) {
             roundedClass = "rounded";
-          } else if (isFirstNetworkBit) {
+          } else if (isFirstMasked) {
             roundedClass = "rounded-l";
-          } else if (isLastNetworkBit) {
+          } else if (isLastMasked) {
             roundedClass = "rounded-r";
           }
         } else if (highlightedClass) {
@@ -60,15 +61,15 @@ export function PartBits({
           <div
             key={index}
             className={cn(
-              "flex items-center justify-center px-1.5 py-1 leading-none",
-              // isFirst && "pl-4",
-              // isLast && "pr-4",
+              "flex items-center justify-center px-0.5 py-1 leading-none",
               highlightedClass,
-              isNetworkBit && highlightedPrefixClass,
+              isFirst && "pl-2",
+              isLast && "pr-2",
+              isMasked && highlightedPrefixClass,
               roundedClass,
             )}
           >
-            <span className={isNetworkBit ? "opacity-50" : undefined}>{bit}</span>
+            <span className={isMasked ? "opacity-50" : undefined}>{bit}</span>
           </div>
         );
       })}

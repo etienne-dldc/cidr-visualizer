@@ -1,9 +1,9 @@
 import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { formatIPv6 } from "../utils/ipv6";
-import { checkIPv6Reserved } from "../utils/reservedIPv6";
+import { formatIPv6, getIPv6Mask } from "../utils/ipv6";
 import { parseIPv6String } from "../utils/parseIPv6String";
+import { checkIPv6Reserved } from "../utils/reservedIPv6";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv6Bits } from "./IPv6Bits";
@@ -16,6 +16,9 @@ export function IPv6App() {
 
   const ipv6String = formatIPv6(ipv6);
   const ipv6WithPrefix = `${ipv6String}/${ipv6[8]}`;
+
+  const ipv6Mask = getIPv6Mask(ipv6[8]);
+  const maskString = formatIPv6([...ipv6Mask, 128] as any);
 
   const reservedInfo = checkIPv6Reserved(ipv6);
 
@@ -34,13 +37,14 @@ export function IPv6App() {
         </button>
         <CopyButton textToCopy={ipv6WithPrefix} />
       </div>
+      <div className="text-sm text-gray-600">Mask: {maskString}</div>
       <IPv6Input
         ipv6={ipv6}
         onChange={(newIpv6) => dispatch({ kind: "SetIPv6", ipv6: newIpv6 })}
         highlightedCell={highlightedCell}
         onHighlight={setHighlightedCell}
       />
-      <IPv6Bits ipv6={ipv6} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
+      <IPv6Bits ipv6={ipv6} mask={ipv6Mask} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
       <ReservedIPInfo info={reservedInfo} onCidrClick={handleCidrClick} />
     </Fragment>
   );

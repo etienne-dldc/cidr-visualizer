@@ -1,6 +1,8 @@
 import { produce } from "immer";
 import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
 import type { IPv4CIDR, IPv6CIDR } from "../utils/ipv4";
+import { generateRandomIPv4CIDR } from "../utils/ipv4";
+import { generateRandomIPv6CIDR } from "../utils/ipv6";
 
 export interface TAppState {
   mode: "IPv4" | "IPv6";
@@ -27,62 +29,16 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
         draft.ipv4 = action.ipv4;
         return;
       case "RandomIpv4": {
-        // Prefix represents HOST bits - randomize only those bits
-        const [p1, p2, p3, p4, prefixLength] = draft.ipv4;
-        // Convert to string of bits
-        let bits = (
-          p1.toString(2).padStart(8, "0") +
-          p2.toString(2).padStart(8, "0") +
-          p3.toString(2).padStart(8, "0") +
-          p4.toString(2).padStart(8, "0")
-        ).split("");
-        bits.forEach((_, index) => {
-          if (index < 32 - prefixLength) {
-            // Randomize network bits (before the host bits)
-            bits[index] = Math.random() < 0.5 ? "0" : "1";
-          }
-        });
-        // Convert back to numbers
-        const newP1 = parseInt(bits.slice(0, 8).join(""), 2);
-        const newP2 = parseInt(bits.slice(8, 16).join(""), 2);
-        const newP3 = parseInt(bits.slice(16, 24).join(""), 2);
-        const newP4 = parseInt(bits.slice(24, 32).join(""), 2);
-        draft.ipv4 = [newP1, newP2, newP3, newP4, prefixLength];
+        const prefixLength = draft.ipv4[4];
+        draft.ipv4 = generateRandomIPv4CIDR(prefixLength);
         return;
       }
       case "SetIPv6":
         draft.ipv6 = action.ipv6;
         return;
       case "RandomIpv6": {
-        // Prefix represents HOST bits - randomize only those bits
-        const [p1, p2, p3, p4, p5, p6, p7, p8, prefixLength] = draft.ipv6;
-        // Convert to string of bits
-        let bits = (
-          p1.toString(2).padStart(16, "0") +
-          p2.toString(2).padStart(16, "0") +
-          p3.toString(2).padStart(16, "0") +
-          p4.toString(2).padStart(16, "0") +
-          p5.toString(2).padStart(16, "0") +
-          p6.toString(2).padStart(16, "0") +
-          p7.toString(2).padStart(16, "0") +
-          p8.toString(2).padStart(16, "0")
-        ).split("");
-        bits.forEach((_, index) => {
-          if (index < 128 - prefixLength) {
-            // Randomize network bits (before the host bits)
-            bits[index] = Math.random() < 0.5 ? "0" : "1";
-          }
-        });
-        // Convert back to numbers
-        const newP1 = parseInt(bits.slice(0, 16).join(""), 2);
-        const newP2 = parseInt(bits.slice(16, 32).join(""), 2);
-        const newP3 = parseInt(bits.slice(32, 48).join(""), 2);
-        const newP4 = parseInt(bits.slice(48, 64).join(""), 2);
-        const newP5 = parseInt(bits.slice(64, 80).join(""), 2);
-        const newP6 = parseInt(bits.slice(80, 96).join(""), 2);
-        const newP7 = parseInt(bits.slice(96, 112).join(""), 2);
-        const newP8 = parseInt(bits.slice(112, 128).join(""), 2);
-        draft.ipv6 = [newP1, newP2, newP3, newP4, newP5, newP6, newP7, newP8, prefixLength];
+        const prefixLength = draft.ipv6[8];
+        draft.ipv6 = generateRandomIPv6CIDR(prefixLength);
         return;
       }
     }
@@ -93,8 +49,8 @@ function reducer(state: TAppState, action: TAppAction): TAppState {
 export function AppStateProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = useReducer(reducer, {
     mode: "IPv4",
-    ipv4: [0, 0, 0, 0, 0],
-    ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ipv4: [0, 0, 0, 0, 32],
+    ipv6: [0, 0, 0, 0, 0, 0, 0, 0, 128],
   });
 
   const contextValue = useMemo(() => ({ ...state, dispatch }), [state, dispatch]);
