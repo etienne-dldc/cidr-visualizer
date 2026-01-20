@@ -12,7 +12,7 @@
     "lint": "oxlint --type-aware .",
     "lint:fix": "oxlint --fix --type-aware .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch"
   },

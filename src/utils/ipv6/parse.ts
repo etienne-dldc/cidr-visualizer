@@ -14,7 +14,13 @@ export function parseIPv6String(input: string): IPv6CIDR | null {
 
   const prefixLength = prefixPart ? parseInt(prefixPart, 10) : 128;
 
-  if (prefixLength < 0 || prefixLength > 128) {
+  // Validate prefix is a valid number
+  if (isNaN(prefixLength) || prefixLength < 0 || prefixLength > 128) {
+    return null;
+  }
+
+  // Reject empty prefix (trailing /)
+  if (parts.length === 2 && prefixPart === "") {
     return null;
   }
 
@@ -49,13 +55,20 @@ function parseIPv6Address(address: string): number[] | null {
       ...rightParts,
     ];
 
-    return allParts.map((p) => {
+    const parsed = allParts.map((p) => {
       const num = parseInt(p, 16);
-      if (isNaN(num) || num < 0 || num > 65535) {
+      if (isNaN(num) || num < 0 || num > 0xffff) {
         return null;
       }
       return num;
-    }) as number[];
+    });
+
+    // Check if any part failed to parse
+    if (parsed.includes(null)) {
+      return null;
+    }
+
+    return parsed as number[];
   }
 
   // Regular notation without ::
@@ -64,11 +77,18 @@ function parseIPv6Address(address: string): number[] | null {
     return null;
   }
 
-  return hexParts.map((p) => {
+  const parsed = hexParts.map((p) => {
     const num = parseInt(p, 16);
-    if (isNaN(num) || num < 0 || num > 65535) {
+    if (isNaN(num) || num < 0 || num > 0xffff) {
       return null;
     }
     return num;
-  }) as number[];
+  });
+
+  // Check if any part failed to parse
+  if (parsed.includes(null)) {
+    return null;
+  }
+
+  return parsed as number[];
 }
