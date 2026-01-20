@@ -1,8 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowRightFromLine, ArrowRightToLine, GlobeIcon, LayersIcon, Share2Icon, ShieldIcon } from "lucide-react";
+import { formatCount, formatIPv4 } from "../utils/ipv4/format";
 import type { IPv4NetworkInfo } from "../utils/ipv4/networkInfo";
-import { formatCount, formatIPv4 } from "../utils/ipv4/networkInfo";
-import { formatIPv6 } from "../utils/ipv6/ipv6";
+import { formatIPv6 } from "../utils/ipv6/format";
 import type { IPv6NetworkInfo } from "../utils/ipv6/networkInfo";
 
 interface NetworkInfoDisplayProps {

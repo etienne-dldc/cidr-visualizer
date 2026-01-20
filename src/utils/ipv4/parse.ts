@@ -1,4 +1,4 @@
-import type { IPv4CIDR } from "./ipv4";
+import type { IPv4CIDR } from "./types";
 
 export function parseIPv4String(input: string): IPv4CIDR | null {
   const trimmed = input.trim();

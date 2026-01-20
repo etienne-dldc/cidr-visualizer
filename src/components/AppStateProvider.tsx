@@ -1,9 +1,9 @@
 import { produce } from "immer";
 import { createContext, useContext, useMemo, useReducer, type ActionDispatch, type PropsWithChildren } from "react";
-import type { IPv4CIDR } from "../utils/ipv4/ipv4";
-import { generateRandomIPv4CIDR, generateRandomIPv4InNetwork } from "../utils/ipv4/ipv4";
-import type { IPv6CIDR } from "../utils/ipv6/ipv6";
-import { generateRandomIPv6CIDR, generateRandomIPv6InNetwork } from "../utils/ipv6/ipv6";
+import { generateRandomIPv4CIDR, generateRandomIPv4InNetwork } from "../utils/ipv4/random";
+import type { IPv4CIDR } from "../utils/ipv4/types";
+import { generateRandomIPv6CIDR, generateRandomIPv6InNetwork } from "../utils/ipv6/random";
+import type { IPv6CIDR } from "../utils/ipv6/types";
 import { detectIPType } from "../utils/shared/detectIPType";
 import { clearURLParams, readIPFromURL } from "../utils/urlParams";
 

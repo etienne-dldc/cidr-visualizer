@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { getIPv4Mask } from "../utils/ipv4/ipv4";
+import { getIPv4Mask } from "../utils/ipv4/mask";
 import { calculateIPv4NetworkInfo } from "../utils/ipv4/networkInfo";
 import { parseIPv4String } from "../utils/ipv4/parse";
 import { checkIPv4Reserved } from "../utils/ipv4/reserved";

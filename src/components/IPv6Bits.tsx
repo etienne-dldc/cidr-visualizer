@@ -1,4 +1,4 @@
-import type { IPv6CIDR } from "../utils/ipv6/ipv6";
+import type { IPv6CIDR } from "../utils/ipv6/types";
 import { PartBits } from "./PartBits";
 
 export interface IPv6BitsProps {

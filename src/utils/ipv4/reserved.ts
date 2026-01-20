@@ -2,7 +2,7 @@ import type {
   ReservedIPInfo,
   ReservedIPMatch,
 } from "../shared/reservedIPTypes";
-import type { IPv4CIDR } from "./ipv4";
+import type { IPv4CIDR } from "./types";
 
 interface IPv4ReservedRange {
   cidr: string;

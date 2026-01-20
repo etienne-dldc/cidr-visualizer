@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { formatIPv6, getIPv6Mask } from "../utils/ipv6/ipv6";
+import { formatIPv6 } from "../utils/ipv6/format";
+import { getIPv6Mask } from "../utils/ipv6/mask";
 import { calculateIPv6NetworkInfo } from "../utils/ipv6/networkInfo";
 import { parseIPv6String } from "../utils/ipv6/parse";
 import { checkIPv6Reserved } from "../utils/ipv6/reserved";

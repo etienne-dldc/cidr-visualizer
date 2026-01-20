@@ -1,4 +1,4 @@
-import type { IPv6, IPv6CIDR } from "./ipv6";
+import type { IPv6, IPv6CIDR } from "./types";
 
 export interface IPv6NetworkInfo {
   mode: "IPv6";

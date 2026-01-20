@@ -1,4 +1,4 @@
-import type { IPv4, IPv4CIDR } from "./ipv4";
+import type { IPv4, IPv4CIDR } from "./types";
 
 export interface IPv4NetworkInfo {
   mode: "IPv4";

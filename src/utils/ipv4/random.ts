@@ -1,28 +1,5 @@
-export type IPv4 = [p1: number, p2: number, p3: number, p4: number];
-export type IPv4CIDR = [
-  p1: number,
-  p2: number,
-  p3: number,
-  p4: number,
-  prefixLength: number,
-];
-
-/**
- * Convert an IPv4 CIDR prefix length to a network mask
- * @param prefixLength - CIDR prefix length (0-32)
- * @returns IPv4 mask as [p1, p2, p3, p4]
- */
-export function getIPv4Mask(prefixLength: number): IPv4 {
-  const mask: number[] = [0, 0, 0, 0];
-
-  for (let i = 0; i < prefixLength; i++) {
-    const octetIndex = Math.floor(i / 8);
-    const bitIndex = 7 - (i % 8);
-    mask[octetIndex] |= 1 << bitIndex;
-  }
-
-  return mask as IPv4;
-}
+import { getIPv4Mask } from "./mask";
+import type { IPv4CIDR } from "./types";
 
 /**
  * Generate a random IPv4 CIDR by randomizing host bits and setting network bits to 0
