@@ -2,10 +2,12 @@ import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { formatIPv6 } from "../utils/ipv6";
+import { checkIPv6Reserved } from "../utils/reservedIPs";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv6Bits } from "./IPv6Bits";
 import { IPv6Input } from "./IPv6Input";
+import { ReservedIPInfo } from "./ReservedIPInfo";
 
 export function IPv6App() {
   const { ipv6, dispatch } = useAppState();
@@ -13,6 +15,8 @@ export function IPv6App() {
 
   const ipv6String = formatIPv6(ipv6);
   const ipv6WithPrefix = `${ipv6String}/${ipv6[8]}`;
+
+  const reservedInfo = checkIPv6Reserved(ipv6);
 
   return (
     <Fragment>
@@ -29,6 +33,7 @@ export function IPv6App() {
         onHighlight={setHighlightedCell}
       />
       <IPv6Bits ipv6={ipv6} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
+      <ReservedIPInfo info={reservedInfo} />
     </Fragment>
   );
 }

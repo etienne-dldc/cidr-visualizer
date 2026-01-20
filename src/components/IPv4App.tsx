@@ -1,14 +1,18 @@
 import { DicesIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
+import { checkIPv4Reserved } from "../utils/reservedIPs";
 import { useAppState } from "./AppStateProvider";
 import { CopyButton } from "./CopyButton";
 import { IPv4Bits } from "./IPv4Bits";
 import { IPv4Input } from "./IPv4Input";
+import { ReservedIPInfo } from "./ReservedIPInfo";
 
 export function IPv4App() {
   const { ipv4, dispatch } = useAppState();
   const [highlightedCell, setHighlightedCell] = useState<number | "prefix" | null>(null);
+
+  const reservedInfo = checkIPv4Reserved(ipv4);
 
   return (
     <Fragment>
@@ -25,6 +29,7 @@ export function IPv4App() {
         onHighlight={setHighlightedCell}
       />
       <IPv4Bits ipv4={ipv4} highlightedCell={highlightedCell} onHighlight={setHighlightedCell} />
+      <ReservedIPInfo info={reservedInfo} />
     </Fragment>
   );
 }
