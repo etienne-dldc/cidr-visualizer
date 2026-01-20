@@ -3,9 +3,10 @@ import type { ReservedIPMatch } from "../utils/reservedIPTypes";
 
 export interface ReservedIPInfoProps {
   info: ReservedIPMatch | null;
+  onCidrClick?: (cidr: string) => void;
 }
 
-export function ReservedIPInfo({ info }: ReservedIPInfoProps) {
+export function ReservedIPInfo({ info, onCidrClick }: ReservedIPInfoProps) {
   if (!info) {
     return null;
   }
@@ -23,7 +24,14 @@ export function ReservedIPInfo({ info }: ReservedIPInfoProps) {
         <InfoIcon className="mt-0.5 shrink-0 text-carbon-black" size={24} />
         <div className="flex-1">
           <p className="text-base text-carbon-black">
-            <span className="font-semibold">{info.cidr}</span> is a reserved IP range {descriptionText}.
+            <button
+              className="font-semibold underline decoration-dotted hover:decoration-solid cursor-pointer"
+              onClick={() => onCidrClick?.(info.cidr)}
+              type="button"
+            >
+              {info.cidr}
+            </button>{" "}
+            is a reserved IP range {descriptionText}.
           </p>
           {info.rfc && <p className="mt-2 text-sm text-dim-grey">{info.rfc}</p>}
         </div>
