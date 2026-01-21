@@ -35,6 +35,10 @@ pnpm dev
 pnpm build
 ```
 
+## Credits
+
+This project is heavily inspired by [cidr.xyz](https://cidr.xyz/) by John Ko. The UI and features are based on this excellent tool, with the addition of IPv6 support and quality of life improvements.
+
 ## License
 
 MIT
