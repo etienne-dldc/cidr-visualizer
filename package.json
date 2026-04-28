@@ -17,33 +17,30 @@
     "typecheck:watch": "tsc --watch"
   },
   "dependencies": {
-    "@ariakit/react": "^0.4.21",
+    "@ariakit/react": "^0.4.26",
     "@plausible-analytics/tracker": "^0.4.4",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.2.4",
     "clsx": "^2.1.1",
-    "immer": "^11.1.3",
-    "lucide-react": "^0.562.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18"
+    "immer": "^11.1.4",
+    "lucide-react": "^1.12.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
-    "@types/react": "^19.2.5",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "oxfmt": "^0.26.0",
-    "oxlint": "^1.41.0",
-    "oxlint-tsgolint": "^0.11.1",
-    "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5",
-    "vitest": "^4.0.17"
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
+    "oxlint-tsgolint": "^0.22.1",
+    "typescript": "~6.0.3",
+    "vite": "8.0.10",
+    "vitest": "^4.1.5"
   },
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:rolldown-vite@7.2.5"
-    }
-  }
+  "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8"
 }

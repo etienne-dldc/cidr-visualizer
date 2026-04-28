@@ -18,7 +18,7 @@ FROM caddy:2-alpine AS runtime
 WORKDIR /srv
 
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /app/dist/client /srv
+COPY --from=builder /app/dist /srv
 
 EXPOSE 80
 
